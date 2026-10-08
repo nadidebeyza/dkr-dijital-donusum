@@ -15,6 +15,7 @@ from content_history import (
     format_history_for_prompt,
     load_history,
 )
+from text_case import sentence_case
 
 Kind = Literal["story", "post"]
 PostFormat = Literal["single", "carousel", "story"]
@@ -113,11 +114,12 @@ Return ONLY a JSON object:
 
 Rules:
 1. headline: Turkish, at most {max_words} words, correct Turkish characters (ş, ğ, ı, İ, ç, ö, ü). subline: optional, one short Turkish line or "".
+   Use Turkish sentence case: capitalise only the first letter and proper nouns/acronyms (KEP, TÜRKKEP, DKR, e-Devlet, Acıbadem, Üsküdar). Never ALL CAPS, never Title Case. Example: "E-imzanız ıslak imzayla aynı geçerlilikte".
 2. caption: Turkish, 2-5 short paragraphs, informative, ends with a call to action (call, DM, or visit). Do NOT include address, phone, hours or website — they are appended automatically.
 3. NEVER invent prices, fees, durations, discounts, campaigns, percentages, legal claims or guarantees. Use numbers ONLY if they appear in the business facts. Never write "TL", "%", "ücretsiz", "indirim", "kampanya" or "fiyat".
 4. Do not speak on behalf of TÜRKKEP; no official announcements.
 5. Only mention the services listed in the facts.
-6. image_prompt: English, a real-world photographic scene that fits the slide (modern Istanbul office, desk, laptop, hands signing, city view). No text, logos, documents, ID cards or screens in the scene. People only anonymous, faces not prominent.
+6. image_prompt: English, an eye-catching, emotional real-world photo that fits the slide. Prefer people: e.g. a Turkish accountant smiling at her desk, a lawyer relaxed after finishing work on a laptop, a young entrepreneur on the phone in a bright café-office, a small business owner shaking hands, a team celebrating in a modern Istanbul office, Üsküdar/Bosphorus view through an office window. Describe the person, action, emotion, setting, light and camera angle. Laptop and phone screens face away from the camera. No text, logos, documents with content or ID cards in the scene. Each slide uses a different scene.
 7. hashtags: 3-8 lowercase Turkish service hashtags.
 8. Do NOT reuse any topic_id or headline from "Recently published" and do not use pillars on cooldown.
 {carousel_rules}
@@ -212,8 +214,8 @@ def normalize_plan(data: dict[str, Any], kind: Kind, requested_format: PostForma
     raw_slides = data.get("slides") or []
     slides = [
         Slide(
-            headline=_clip_words(str(s.get("headline", "")).strip(), config.HEADLINE_MAX_WORDS),
-            subline=str(s.get("subline", "") or "").strip(),
+            headline=sentence_case(_clip_words(str(s.get("headline", "")), config.HEADLINE_MAX_WORDS)),
+            subline=sentence_case(str(s.get("subline", "") or "")),
             image_prompt=str(s.get("image_prompt", "") or "").strip(),
         )
         for s in raw_slides
@@ -425,9 +427,9 @@ def offline_plan(
             fmt = "carousel" if topic["format"] == "carousel" else "single"
 
         cover = Slide(
-            headline=_clip_words(topic["headline"], config.HEADLINE_MAX_WORDS),
+            headline=sentence_case(_clip_words(topic["headline"], config.HEADLINE_MAX_WORDS)),
             subline="KEP ve e-imza için yetkili başvuru merkezi",
-            image_prompt=f"{topic['description']} — modern Istanbul office scene",
+            image_prompt="a Turkish business owner smiling while working on a laptop in a bright modern Istanbul office",
         )
         slides = [cover]
         if fmt == "carousel":

@@ -9,6 +9,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 import content_history as ch  # noqa: E402
 from gemini_client import ContentPlan, Slide, facts_text, normalize_plan, select_plan  # noqa: E402
+from text_case import sentence_case  # noqa: E402
 
 
 def make_plan(topic_id="kep-vs-eposta", pillar="kep_bilgi", headline="KEP mi, e-posta mı?", caption=None):
@@ -126,6 +127,31 @@ def test_select_plan_passes_rejection_note():
 
     assert select_plan("post", produce, history, retries=3).topic_id == "eimza-nedir"
     assert notes[0] == "" and "kep-vs-eposta" in notes[1]
+
+
+@pytest.mark.parametrize(
+    ("raw", "expected"),
+    [
+        ("KEP Mİ, E-POSTA MI?", "KEP mi, e-posta mı?"),
+        ("Islak İmzayla Aynı Geçerlilik", "Islak imzayla aynı geçerlilik"),
+        ("e-imzanız E-DEVLET ile uyumlu", "E-imzanız e-Devlet ile uyumlu"),
+        ("acıbadem'deyiz. hemen ARAYIN!", "Acıbadem'deyiz. Hemen arayın!"),
+        ("türkkep YETKİLİ başvuru merkezi", "TÜRKKEP yetkili başvuru merkezi"),
+        ("işletmeniz için KEP", "İşletmeniz için KEP"),
+        ("DKR TÜRKKEP BAŞVURU MERKEZİ kimdir?", "DKR TÜRKKEP Başvuru Merkezi kimdir?"),
+    ],
+)
+def test_sentence_case(raw, expected):
+    assert sentence_case(raw) == expected
+
+
+def test_image_model_discovery_prefers_stable_flash_image():
+    from image_gen import discover_image_model
+
+    available = ["gemini-3.5-flash", "gemini-x-flash-image-preview", "gemini-x-flash-image", "imagen-x-generate"]
+    assert discover_image_model(available) == "gemini-x-flash-image"
+    assert discover_image_model(["imagen-x-generate", "gemini-3.5-flash"]) == "imagen-x-generate"
+    assert discover_image_model(["gemini-3.5-flash", "gemini-embedding-001"]) is None
 
 
 def test_history_is_trimmed(tmp_path, monkeypatch):

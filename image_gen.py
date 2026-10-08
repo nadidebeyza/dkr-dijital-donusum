@@ -16,13 +16,23 @@ import config
 
 PHOTO_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp"}
 
-IMAGE_PROMPT_STYLE = "photorealistic, natural light, modern Istanbul office / professional context"
+IMAGE_PROMPT_STYLE = (
+    "photorealistic editorial photograph, natural light, modern Istanbul office / professional context, "
+    "shallow depth of field, warm inviting colors, vertical composition, main subject in the upper two thirds"
+)
 IMAGE_PROMPT_BANS = (
     "no text, no letters, no logos, no watermarks, no ID cards, "
     "no documents with readable content, no screens with readable text"
 )
-PEOPLE_RULE = "anonymous, face not prominent"
-PEOPLE_WORDS = ("person", "people", "man", "woman", "hand", "hands", "team", "employee", "customer", "colleague")
+PEOPLE_RULE = (
+    "realistic Turkish people with natural candid expressions, authentic not stock-posed, "
+    "fictional people, not a celebrity or a real identifiable person"
+)
+PEOPLE_WORDS = (
+    "person", "people", "man", "woman", "hand", "hands", "team", "employee", "customer", "colleague",
+    "accountant", "lawyer", "owner", "entrepreneur", "manager", "staff", "client", "couple", "her ", "his ",
+)
+IMAGE_MODEL_PREFERENCE = ("flash-image", "image", "imagen")
 
 
 @dataclass
@@ -33,7 +43,7 @@ class SlideImage:
 
 
 def build_image_prompt(scene: str) -> str:
-    scene = scene.strip() or "a calm, modern office desk with a laptop and a coffee cup"
+    scene = scene.strip() or "a Turkish business owner smiling while working on a laptop in a bright modern office"
     parts = [scene, IMAGE_PROMPT_STYLE, IMAGE_PROMPT_BANS]
     if any(word in scene.lower() for word in PEOPLE_WORDS):
         parts.append(PEOPLE_RULE)
@@ -82,25 +92,41 @@ def _rel(path: Path) -> str:
         return path.as_posix()
 
 
+def discover_image_model(available: list[str]) -> str | None:
+    """Pick an image-generation model from the API's own model list."""
+    for marker in IMAGE_MODEL_PREFERENCE:
+        matches = [name for name in available if marker in name and "embedding" not in name]
+        stable = [name for name in matches if "preview" not in name and "exp" not in name]
+        if stable or matches:
+            return max(stable or matches)
+    return None
+
+
 @lru_cache(maxsize=1)
 def _available_image_model() -> str | None:
-    name = config.env("GEMINI_IMAGE_MODEL")
     key = config.env("GEMINI_API_KEY")
-    if not name or not key:
+    if not key:
         return None
     try:
         from google import genai
 
         client = genai.Client(api_key=key)
-        available = {m.name.removeprefix("models/") for m in client.models.list()}
+        available = [m.name.removeprefix("models/") for m in client.models.list()]
     except Exception as exc:
         print(f"Warning: could not list Gemini models ({type(exc).__name__}) — skipping AI images.")
         return None
-    target = name.removeprefix("models/")
-    if target not in available:
-        print(f"Warning: GEMINI_IMAGE_MODEL '{target}' is not offered by the API — skipping AI images.")
-        return None
-    return target
+
+    name = config.env("GEMINI_IMAGE_MODEL").removeprefix("models/")
+    if name:
+        if name in available:
+            return name
+        print(f"Warning: GEMINI_IMAGE_MODEL '{name}' is not offered by the API — trying auto-discovery.")
+    discovered = discover_image_model(available)
+    if discovered:
+        print(f"Using image model '{discovered}' (discovered from the API model list).")
+    else:
+        print("Warning: no image model available for this API key — using fallback backgrounds.")
+    return discovered
 
 
 def _aspect_ratio(size: tuple[int, int]) -> str:
@@ -121,16 +147,15 @@ def generate_ai_image(scene: str, size: tuple[int, int]) -> Image.Image | None:
             result = client.models.generate_images(
                 model=model,
                 prompt=prompt,
-                config=types.GenerateImagesConfig(number_of_images=1, aspect_ratio=_aspect_ratio(size)),
+                config=types.GenerateImagesConfig(
+                    number_of_images=1,
+                    aspect_ratio=_aspect_ratio(size),
+                    person_generation="ALLOW_ADULT",
+                ),
             )
             data = result.generated_images[0].image.image_bytes
         else:
-            response = client.models.generate_content(
-                model=model,
-                contents=prompt,
-                config=types.GenerateContentConfig(response_modalities=["IMAGE"]),
-            )
-            data = _first_inline_image(response)
+            data = _generate_with_gemini_image(client, types, model, prompt, size)
         if not data:
             print("Warning: image model returned no image — using fallback background.")
             return None
@@ -138,6 +163,24 @@ def generate_ai_image(scene: str, size: tuple[int, int]) -> Image.Image | None:
     except Exception as exc:
         print(f"Warning: AI image generation failed ({type(exc).__name__}) — using fallback background.")
         return None
+
+
+def _generate_with_gemini_image(client, types, model: str, prompt: str, size: tuple[int, int]) -> bytes | None:
+    try:
+        config_with_ratio = types.GenerateContentConfig(
+            response_modalities=["IMAGE"],
+            image_config=types.ImageConfig(aspect_ratio=_aspect_ratio(size)),
+        )
+        response = client.models.generate_content(model=model, contents=prompt, config=config_with_ratio)
+    except Exception as exc:
+        if "aspect" not in str(exc).lower() and "image_config" not in str(exc).lower():
+            raise
+        response = client.models.generate_content(
+            model=model,
+            contents=prompt,
+            config=types.GenerateContentConfig(response_modalities=["IMAGE"]),
+        )
+    return _first_inline_image(response)
 
 
 def _first_inline_image(response: Any) -> bytes | None:
