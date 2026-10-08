@@ -102,9 +102,26 @@ def resolve_instagram_account_id(
     if _uses_instagram_login_api(token):
         resolved_id, _ = _verify_instagram_login_token(token)
         return resolved_id
-    if not ig_id:
-        raise RuntimeError("Missing INSTAGRAM_ACCOUNT_ID in .env or GitHub Secrets.")
-    return ig_id
+    return ig_id or _account_id_from_page_token(token)
+
+
+def _account_id_from_page_token(token: str) -> str:
+    """Look up the Instagram Business Account linked to the Page that owns this token."""
+    response = requests.get(
+        f"{FACEBOOK_GRAPH_BASE}/me",
+        params={"fields": "instagram_business_account", "access_token": token},
+        timeout=30,
+    )
+    if response.ok:
+        linked = (response.json().get("instagram_business_account") or {}).get("id")
+        if linked:
+            print("Note: INSTAGRAM_ACCOUNT_ID is empty — using the account linked to the Page token.")
+            return str(linked)
+    raise RuntimeError(
+        "Missing INSTAGRAM_ACCOUNT_ID in .env or GitHub Secrets, and it could not be resolved "
+        "from INSTAGRAM_ACCESS_TOKEN. Use a Page Access Token whose Page is linked to the "
+        "Instagram business account."
+    )
 
 
 def instagram_api_base(access_token: str | None = None) -> str:
@@ -132,10 +149,6 @@ def verify_instagram_setup(
     ig_id = _clean(account_id or os.getenv("INSTAGRAM_ACCOUNT_ID"))
     if not token:
         raise RuntimeError("Missing INSTAGRAM_ACCESS_TOKEN in .env or GitHub Secrets.")
-    if not _uses_instagram_login_api(token) and not ig_id:
-        raise RuntimeError(
-            "Missing INSTAGRAM_ACCOUNT_ID in .env or GitHub Secrets."
-        )
 
     if _uses_instagram_login_api(token):
         resolved_id, username = _verify_instagram_login_token(token)
@@ -147,5 +160,5 @@ def verify_instagram_setup(
         print(f"Instagram ready: @{username}")
         return
 
-    username = _verify_facebook_login_token(token, ig_id)
+    username = _verify_facebook_login_token(token, ig_id or _account_id_from_page_token(token))
     print(f"Instagram ready: @{username}")
