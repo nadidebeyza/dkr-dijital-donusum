@@ -1,7 +1,8 @@
-"""Slide backgrounds: real photo library first, then Gemini image model, then a branded fallback."""
+"""Slide backgrounds: real photo library, Gemini image model, Cloudflare Workers AI, then a branded fallback."""
 
 from __future__ import annotations
 
+import base64
 import io
 import json
 import math
@@ -10,6 +11,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
+import requests
 from PIL import Image, ImageDraw, ImageFilter
 
 import config
@@ -133,7 +135,13 @@ def _aspect_ratio(size: tuple[int, int]) -> str:
     return "9:16" if size[1] / size[0] > 1.5 else "3:4"
 
 
+_gemini_images_disabled = False
+
+
 def generate_ai_image(scene: str, size: tuple[int, int]) -> Image.Image | None:
+    global _gemini_images_disabled
+    if _gemini_images_disabled:
+        return None
     model = _available_image_model()
     if model is None:
         return None
@@ -157,11 +165,50 @@ def generate_ai_image(scene: str, size: tuple[int, int]) -> Image.Image | None:
         else:
             data = _generate_with_gemini_image(client, types, model, prompt, size)
         if not data:
-            print("Warning: image model returned no image — using fallback background.")
+            print("Warning: Gemini image model returned no image.")
             return None
         return Image.open(io.BytesIO(data)).convert("RGB")
     except Exception as exc:
-        print(f"Warning: AI image generation failed ({type(exc).__name__}) — using fallback background.")
+        message = str(exc).lower()
+        if "429" in message or "resource_exhausted" in message or "quota" in message:
+            _gemini_images_disabled = True
+            print("Note: Gemini image quota unavailable (billing required) — skipping Gemini images for this run.")
+        else:
+            print(f"Warning: Gemini image generation failed ({type(exc).__name__}).")
+        return None
+
+
+CLOUDFLARE_DEFAULT_MODEL = "@cf/black-forest-labs/flux-1-schnell"
+CLOUDFLARE_PROMPT_LIMIT = 2048
+
+
+def generate_cloudflare_image(scene: str) -> Image.Image | None:
+    """Cloudflare Workers AI (FLUX); free daily allowance. Returns a square image or None."""
+    account = config.env("CLOUDFLARE_ACCOUNT_ID")
+    token = config.env("CLOUDFLARE_API_TOKEN")
+    if not account or not token:
+        return None
+    model = config.env("CLOUDFLARE_IMAGE_MODEL", CLOUDFLARE_DEFAULT_MODEL)
+    prompt = build_image_prompt(scene)[:CLOUDFLARE_PROMPT_LIMIT]
+    try:
+        response = requests.post(
+            f"https://api.cloudflare.com/client/v4/accounts/{account}/ai/run/{model}",
+            headers={"Authorization": f"Bearer {token}"},
+            json={"prompt": prompt, "steps": 8},
+            timeout=120,
+        )
+        payload = response.json() if response.headers.get("content-type", "").startswith("application/json") else {}
+        if not response.ok or not payload.get("success", False):
+            errors = "; ".join(str(e.get("message", e)) for e in payload.get("errors", [])) or f"HTTP {response.status_code}"
+            print(f"Warning: Cloudflare image generation failed — {errors}")
+            return None
+        image_b64 = (payload.get("result") or {}).get("image")
+        if not image_b64:
+            print("Warning: Cloudflare returned no image.")
+            return None
+        return Image.open(io.BytesIO(base64.b64decode(image_b64))).convert("RGB")
+    except Exception as exc:
+        print(f"Warning: Cloudflare image generation failed ({type(exc).__name__}).")
         return None
 
 
@@ -287,4 +334,9 @@ def get_slide_image(
     if generated is not None:
         return SlideImage(generated, "gemini")
 
+    generated = generate_cloudflare_image(scene)
+    if generated is not None:
+        return SlideImage(generated, "cloudflare")
+
+    print("Warning: no AI image source succeeded — using the branded fallback background.")
     return SlideImage(fallback_background(size, pillar), "fallback")

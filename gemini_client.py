@@ -15,7 +15,7 @@ from content_history import (
     format_history_for_prompt,
     load_history,
 )
-from text_case import sentence_case
+from text_case import sentence_case, title_case
 
 Kind = Literal["story", "post"]
 PostFormat = Literal["single", "carousel", "story"]
@@ -31,7 +31,7 @@ MODEL_FALLBACKS = (
 
 CAROUSEL_MIN = 2
 CAROUSEL_MAX = 10
-CTA_HEADLINE = "Başvuru için bize ulaşın"
+CTA_HEADLINE = "Başvuru İçin Bize Ulaşın"
 
 
 @dataclass
@@ -114,7 +114,7 @@ Return ONLY a JSON object:
 
 Rules:
 1. headline: Turkish, at most {max_words} words, correct Turkish characters (ş, ğ, ı, İ, ç, ö, ü). subline: optional, one short Turkish line or "".
-   Use Turkish sentence case: capitalise only the first letter and proper nouns/acronyms (KEP, TÜRKKEP, DKR, e-Devlet, Acıbadem, Üsküdar). Never ALL CAPS, never Title Case. Example: "E-imzanız ıslak imzayla aynı geçerlilikte".
+   headline uses Turkish title case: capitalise every word except "ve, ile, veya, da, de, ki" and the question particle "mi/mı/mu/mü"; keep acronyms (KEP, TÜRKKEP, DKR). Example: "KEP ile Standart E-Posta Arasındaki Fark". subline uses sentence case. Never ALL CAPS.
 2. caption: Turkish, 2-5 short paragraphs, informative, ends with a call to action (call, DM, or visit). Do NOT include address, phone, hours or website — they are appended automatically.
 3. NEVER invent prices, fees, durations, discounts, campaigns, percentages, legal claims or guarantees. Use numbers ONLY if they appear in the business facts. Never write "TL", "%", "ücretsiz", "indirim", "kampanya" or "fiyat".
 4. Do not speak on behalf of TÜRKKEP; no official announcements.
@@ -214,7 +214,7 @@ def normalize_plan(data: dict[str, Any], kind: Kind, requested_format: PostForma
     raw_slides = data.get("slides") or []
     slides = [
         Slide(
-            headline=sentence_case(_clip_words(str(s.get("headline", "")), config.HEADLINE_MAX_WORDS)),
+            headline=title_case(_clip_words(str(s.get("headline", "")), config.HEADLINE_MAX_WORDS)),
             subline=sentence_case(str(s.get("subline", "") or "")),
             image_prompt=str(s.get("image_prompt", "") or "").strip(),
         )
@@ -427,7 +427,7 @@ def offline_plan(
             fmt = "carousel" if topic["format"] == "carousel" else "single"
 
         cover = Slide(
-            headline=sentence_case(_clip_words(topic["headline"], config.HEADLINE_MAX_WORDS)),
+            headline=title_case(_clip_words(topic["headline"], config.HEADLINE_MAX_WORDS)),
             subline="KEP ve e-imza için yetkili başvuru merkezi",
             image_prompt="a Turkish business owner smiling while working on a laptop in a bright modern Istanbul office",
         )

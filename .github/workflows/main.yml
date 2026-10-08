@@ -5,6 +5,16 @@ on:
     - cron: "0 7 * * *"   # UTC 07:00 = TR 10:00 -> story
     - cron: "0 14 * * *"  # UTC 14:00 = TR 17:00 -> post
   workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run: render images as an artifact, do not publish"
+        type: boolean
+        default: false
+      post_format:
+        description: "Post format"
+        type: choice
+        options: [auto, single, carousel]
+        default: auto
 
 permissions:
   contents: write
@@ -55,9 +65,20 @@ jobs:
           LOCATION_LABEL: ${{ secrets.LOCATION_LABEL }}
           GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
           GEMINI_IMAGE_MODEL: ${{ vars.GEMINI_IMAGE_MODEL }}
-        run: python story.py
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_IMAGE_MODEL: ${{ vars.CLOUDFLARE_IMAGE_MODEL }}
+        run: python story.py ${{ inputs.dry_run && '--dry-run' || '' }}
+
+      - name: Upload story preview
+        if: ${{ inputs.dry_run }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: story-preview
+          path: output/*.png
 
       - name: Commit story history
+        if: ${{ !inputs.dry_run }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -118,9 +139,23 @@ jobs:
           LOCATION_LABEL: ${{ secrets.LOCATION_LABEL }}
           GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
           GEMINI_IMAGE_MODEL: ${{ vars.GEMINI_IMAGE_MODEL }}
-        run: python main.py
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_IMAGE_MODEL: ${{ vars.CLOUDFLARE_IMAGE_MODEL }}
+        run: >-
+          python main.py
+          ${{ inputs.dry_run && '--dry-run' || '' }}
+          ${{ (inputs.post_format == 'single' || inputs.post_format == 'carousel') && format('--format {0}', inputs.post_format) || '' }}
+
+      - name: Upload post preview
+        if: ${{ inputs.dry_run }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: post-preview
+          path: output/*.png
 
       - name: Commit post history
+        if: ${{ !inputs.dry_run }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"

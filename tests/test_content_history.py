@@ -9,7 +9,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 import content_history as ch  # noqa: E402
 from gemini_client import ContentPlan, Slide, facts_text, normalize_plan, select_plan  # noqa: E402
-from text_case import sentence_case  # noqa: E402
+from text_case import sentence_case, title_case  # noqa: E402
 
 
 def make_plan(topic_id="kep-vs-eposta", pillar="kep_bilgi", headline="KEP mi, e-posta mı?", caption=None):
@@ -145,6 +145,23 @@ def test_sentence_case(raw, expected):
     assert sentence_case(raw) == expected
 
 
+@pytest.mark.parametrize(
+    ("raw", "expected"),
+    [
+        ("KEP ile standart e-posta arasındaki farklar", "KEP ile Standart E-Posta Arasındaki Farklar"),
+        ("geleceğe hazır MISINIZ?", "Geleceğe Hazır mısınız?"),
+        ("e-imza ile ıslak imza aynı geçerlilikte", "E-İmza ile Islak İmza Aynı Geçerlilikte"),
+        ("acıbadem'deyiz", "Acıbadem'deyiz"),
+        ("KEP'in avantajları", "KEP'in Avantajları"),
+        ("e-devlet ile uyumlu e-imza", "E-Devlet ile Uyumlu E-İmza"),
+        ("ve sonra KEP", "Ve Sonra KEP"),
+        ("dkr türkkep başvuru merkezi kimdir?", "DKR TÜRKKEP Başvuru Merkezi Kimdir?"),
+    ],
+)
+def test_title_case(raw, expected):
+    assert title_case(raw) == expected
+
+
 def test_image_model_discovery_prefers_stable_flash_image():
     from image_gen import discover_image_model
 
@@ -177,7 +194,7 @@ def test_normalize_plan_forces_story_and_carousel_rules():
 
     carousel = normalize_plan(data, "post")
     assert carousel.format == "carousel" and len(carousel.slides) == 10
-    assert carousel.slides[-1].headline == "Başvuru için bize ulaşın"
+    assert carousel.slides[-1].headline == "Başvuru İçin Bize Ulaşın"
     assert carousel.hashtags == ["#kep", "#eimza"]
 
     with pytest.raises(ValueError):
