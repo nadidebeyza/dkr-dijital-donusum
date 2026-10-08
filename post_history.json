@@ -8,6 +8,15 @@
       "fingerprint": "kep-vs-eposta::kep ile standart e posta arasındaki farklar",
       "photos": [],
       "published_at": "2026-10-08T22:13:42+00:00"
+    },
+    {
+      "topic_id": "basvuru-4-adim",
+      "pillar": "basvuru_sureci",
+      "format": "carousel",
+      "headline": "Dört adımda kolay e-imza ve KEP başvurusu",
+      "fingerprint": "basvuru-4-adim::dört adımda kolay e imza ve kep başvurusu",
+      "photos": [],
+      "published_at": "2026-10-08T22:39:02+00:00"
     }
   ]
 }
