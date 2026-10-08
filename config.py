@@ -59,7 +59,9 @@ def brand_name() -> str:
 
 
 def location_label() -> str:
-    return env("LOCATION_LABEL", "Acıbadem · Üsküdar")
+    label = env("LOCATION_LABEL", "Acıbadem, Üsküdar")
+    # The on-image location is plain text: emoji and pin symbols are dropped.
+    return "".join(ch for ch in label if ord(ch) < 0x2190 or ch == "·").strip()
 
 
 def history_size() -> int:

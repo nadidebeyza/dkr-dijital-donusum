@@ -7,18 +7,17 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Literal
 
-from PIL import Image, ImageDraw, ImageFont, ImageOps, ImageStat
+from PIL import Image, ImageDraw, ImageFilter, ImageFont, ImageOps, ImageStat
 
 import config
-from fonts_loader import load_bold_font, load_emoji_font, load_regular_font
-from image_gen import draw_pin
+from fonts_loader import load_bold_font, load_regular_font
 
 Role = Literal["cover", "content", "cta", "story"]
 Font = ImageFont.FreeTypeFont | ImageFont.ImageFont
 
 WHITE = (255, 255, 255)
-PILL_ALPHA = 225
-PILL_CONTRAST_THRESHOLD = 90
+LOGO_CONTRAST_THRESHOLD = 90
+HALO_STRENGTH = 2.2
 _warned_missing: set[str] = set()
 
 
@@ -108,8 +107,29 @@ def _logo_luminance(logo: Image.Image) -> float:
     return stat.mean[0] if stat.count[0] else 128.0
 
 
+def _corner_score(image: Image.Image, region: tuple[int, int, int, int], logo_lum: float) -> tuple[float, float]:
+    """(score, contrast): prefer light, calm areas behind the dark logo."""
+    stat = ImageStat.Stat(image.crop(region).convert("L"))
+    contrast = stat.mean[0] - logo_lum
+    return contrast - 0.6 * stat.stddev[0], contrast
+
+
+def _soft_halo(logo: Image.Image, height: int) -> Image.Image:
+    """Feathered light glow that follows the logo's own outline (no box or pill)."""
+    pad = height // 2
+    canvas = Image.new("L", (logo.width + 2 * pad, logo.height + 2 * pad), 0)
+    canvas.paste(logo.getchannel("A"), (pad, pad))
+    spread = max(3, (int(height * 0.12) // 2) * 2 + 1)
+    for _ in range(3):
+        canvas = canvas.filter(ImageFilter.MaxFilter(spread))
+    canvas = canvas.filter(ImageFilter.GaussianBlur(height * 0.12)).point(lambda a: min(235, int(a * HALO_STRENGTH)))
+    halo = Image.new("RGBA", canvas.size, (255, 255, 255, 0))
+    halo.putalpha(canvas)
+    return halo
+
+
 def place_logos(image: Image.Image, top: int, margin: int) -> Image.Image:
-    """Paste logos unmodified side by side; add a white pill when the background hides them."""
+    """Paste logos unmodified in the top corner whose background suits them best."""
     height = int(image.height * config.LOGO_HEIGHT_RATIO)
     logos = [_scaled(logo, height) for logo in (_load_logo(p) for p in config.LOGO_FILES) if logo]
     if not logos:
@@ -117,56 +137,36 @@ def place_logos(image: Image.Image, top: int, margin: int) -> Image.Image:
 
     gap = int(height * 0.35)
     total_width = sum(l.width for l in logos) + gap * (len(logos) - 1)
-    pad = int(height * 0.25)
-    region = (margin - pad, top - pad, margin + total_width + pad, top + height + pad)
-
-    background_lum = ImageStat.Stat(image.crop(region).convert("L")).mean[0]
+    pad = int(height * 0.3)
     logo_lum = sum(_logo_luminance(l) for l in logos) / len(logos)
-    base = image.convert("RGBA")
-    if abs(background_lum - logo_lum) < PILL_CONTRAST_THRESHOLD:
-        overlay = Image.new("RGBA", base.size, (0, 0, 0, 0))
-        ImageDraw.Draw(overlay).rounded_rectangle(
-            region, radius=int((height + 2 * pad) / 2), fill=(255, 255, 255, PILL_ALPHA)
-        )
-        base = Image.alpha_composite(base, overlay)
 
-    x = margin
+    candidates = {
+        "left": margin,
+        "right": image.width - margin - total_width,
+    }
+    scored = {
+        side: _corner_score(image, (x - pad, top - pad, x + total_width + pad, top + height + pad), logo_lum)
+        for side, x in candidates.items()
+    }
+    side = max(scored, key=lambda s: scored[s][0])
+    contrast = scored[side][1]
+
+    base = image.convert("RGBA")
+    x = candidates[side]
     for logo in logos:
+        if contrast < LOGO_CONTRAST_THRESHOLD:
+            halo = _soft_halo(logo, height)
+            offset = (halo.width - logo.width) // 2
+            base.alpha_composite(halo, (x - offset, top - offset))
         base.alpha_composite(logo, (x, top))
         x += logo.width + gap
     return base.convert("RGB")
 
 
-def _emoji_pin(target_height: int) -> Image.Image | None:
-    font = load_emoji_font()
-    if font is None:
-        return None
-    try:
-        left, top, right, bottom = font.getbbox("📍")
-        canvas = Image.new("RGBA", (int(right - left) + 4, int(bottom - top) + 4), (0, 0, 0, 0))
-        ImageDraw.Draw(canvas).text((-left + 2, -top + 2), "📍", font=font, embedded_color=True)
-        if canvas.getbbox() is None:
-            return None
-        return _scaled(canvas.crop(canvas.getbbox()), target_height)
-    except (OSError, ValueError):
-        return None
-
-
 def draw_location(image: Image.Image, x: int, y: int, font: Font) -> int:
-    """Draw the pin + LOCATION_LABEL at (x, y); returns the line height."""
-    line_h = _line_height(font)
-    icon_h = int(line_h * 1.25)
-    icon = _emoji_pin(icon_h)
-    if icon is not None:
-        image.paste(icon, (x, y + (line_h - icon.height) // 2), icon)
-        icon_w = icon.width
-    else:
-        draw = ImageDraw.Draw(image)
-        icon_w = int(icon_h * 0.7)
-        draw_pin(draw, x + icon_w / 2, y + line_h * 0.25, icon_h * 0.85, WHITE)
-    text_x = x + icon_w + int(line_h * 0.45)
-    _draw_text(ImageDraw.Draw(image), (text_x, y), config.location_label(), font)
-    return line_h
+    """Draw LOCATION_LABEL as plain text at (x, y); returns the line height."""
+    _draw_text(ImageDraw.Draw(image), (x, y), config.location_label(), font)
+    return _line_height(font)
 
 
 def _draw_text(draw: ImageDraw.ImageDraw, xy: tuple[int, int], text: str, font: Font, fill=WHITE) -> None:

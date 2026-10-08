@@ -13,12 +13,13 @@ from pathlib import Path
 from typing import Literal
 
 from dotenv import load_dotenv
+from PIL import Image, ImageOps
 
 import canvas
 import config
 from content_history import load_history, photo_usage_counts, record_published
 from gemini_client import ContentPlan, generate_plan, offline_plan, plan_summary, topics_by_id
-from image_gen import get_slide_image
+from image_gen import SlideImage, get_slide_image
 
 Kind = Literal["story", "post"]
 
@@ -103,6 +104,7 @@ def render_plan(plan: ContentPlan, kind: Kind, out_dir: Path) -> tuple[list[Path
     used: set[str] = set()
     paths: list[Path] = []
     last = len(plan.slides) - 1
+    last_real: Image.Image | None = None
 
     for index, slide in enumerate(plan.slides):
         if kind == "story":
@@ -124,6 +126,10 @@ def render_plan(plan: ContentPlan, kind: Kind, out_dir: Path) -> tuple[list[Path
         )
         if source.photo:
             used.add(source.photo)
+        if source.source == "fallback" and last_real is not None:
+            source = SlideImage(ImageOps.mirror(last_real), "reused")
+        elif source.source != "fallback":
+            last_real = source.image
         print(f"Slide {index + 1}: background from {source.source}")
 
         name = "final_story.png" if kind == "story" else f"final_post_{index + 1}.png"
