@@ -17,6 +17,15 @@
       "fingerprint": "basvuru-4-adim::dört adımda kolay e imza ve kep başvurusu",
       "photos": [],
       "published_at": "2026-10-08T22:39:02+00:00"
+    },
+    {
+      "topic_id": "eimza-islak-imza",
+      "pillar": "eimza_bilgi",
+      "format": "single",
+      "headline": "E-imzanız ıslak imza ile aynı hukuki geçerliliktedir",
+      "fingerprint": "eimza-islak-imza::e imzanız ıslak imza ile aynı hukuki geçerliliktedir",
+      "photos": [],
+      "published_at": "2026-10-08T22:52:06+00:00"
     }
   ]
 }
