@@ -108,12 +108,12 @@ def render_plan(plan: ContentPlan, kind: Kind, out_dir: Path) -> tuple[list[Path
 
     for index, slide in enumerate(plan.slides):
         if kind == "story":
-            text = canvas.SlideText(slide.headline, slide.subline, role="story", show_location=True)
+            text = canvas.SlideText(slide.headline, slide.subline, role="story")
         elif plan.format == "carousel" and index == last:
-            text = canvas.SlideText(slide.headline, "", role="cta", show_location=True, contact_lines=contact_lines())
+            text = canvas.SlideText(slide.headline, "", role="cta", contact_lines=contact_lines())
         else:
             text = canvas.SlideText(
-                slide.headline, slide.subline, role="cover" if index == 0 else "content", show_location=index == 0
+                slide.headline, slide.subline, role="cover" if index == 0 else "content"
             )
 
         source = get_slide_image(

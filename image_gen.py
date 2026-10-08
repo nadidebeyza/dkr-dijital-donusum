@@ -21,8 +21,7 @@ PHOTO_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp"}
 
 IMAGE_PROMPT_STYLE = (
     "photorealistic editorial photograph, natural light, modern Istanbul office / professional context, "
-    "shallow depth of field, warm inviting colors, vertical composition, main subject in the upper two thirds, "
-    "keep the top-right corner bright, plain and uncluttered (soft window light or a light wall), no faces there"
+    "shallow depth of field, warm inviting colors, vertical composition, main subject in the upper two thirds"
 )
 IMAGE_PROMPT_BANS = (
     "no text, no letters, no logos, no watermarks, no ID cards, "
