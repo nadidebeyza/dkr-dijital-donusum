@@ -35,6 +35,15 @@
       "fingerprint": "kep-maliyet-tasarrufu::kep ile operasyonel maliyetlerinizi azaltın",
       "photos": [],
       "published_at": "2026-10-08T22:57:34+00:00"
+    },
+    {
+      "topic_id": "basvuru-uzaktan",
+      "pillar": "basvuru_sureci",
+      "format": "carousel",
+      "headline": "Yerinizden Kalkmadan Uzaktan Başvuru Yapın",
+      "fingerprint": "basvuru-uzaktan::yerinizden kalkmadan uzaktan başvuru yapın",
+      "photos": [],
+      "published_at": "2026-10-08T23:09:09+00:00"
     }
   ]
 }
