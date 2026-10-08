@@ -6,6 +6,7 @@ import base64
 import io
 import json
 import math
+import time
 from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
@@ -20,7 +21,8 @@ PHOTO_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp"}
 
 IMAGE_PROMPT_STYLE = (
     "photorealistic editorial photograph, natural light, modern Istanbul office / professional context, "
-    "shallow depth of field, warm inviting colors, vertical composition, main subject in the upper two thirds"
+    "shallow depth of field, warm inviting colors, vertical composition, main subject in the upper two thirds, "
+    "keep the top-right corner bright, plain and uncluttered (soft window light or a light wall), no faces there"
 )
 IMAGE_PROMPT_BANS = (
     "no text, no letters, no logos, no watermarks, no ID cards, "
@@ -180,6 +182,8 @@ def generate_ai_image(scene: str, size: tuple[int, int]) -> Image.Image | None:
 
 CLOUDFLARE_DEFAULT_MODEL = "@cf/black-forest-labs/flux-1-schnell"
 CLOUDFLARE_PROMPT_LIMIT = 2048
+CLOUDFLARE_ATTEMPTS = 3
+CLOUDFLARE_RETRY_SECONDS = 6
 
 
 def generate_cloudflare_image(scene: str) -> Image.Image | None:
@@ -190,6 +194,17 @@ def generate_cloudflare_image(scene: str) -> Image.Image | None:
         return None
     model = config.env("CLOUDFLARE_IMAGE_MODEL", CLOUDFLARE_DEFAULT_MODEL)
     prompt = build_image_prompt(scene)[:CLOUDFLARE_PROMPT_LIMIT]
+    for attempt in range(1, CLOUDFLARE_ATTEMPTS + 1):
+        image, error = _cloudflare_request(account, token, model, prompt)
+        if image is not None:
+            return image
+        print(f"Warning: Cloudflare image attempt {attempt}/{CLOUDFLARE_ATTEMPTS} failed — {error}")
+        if attempt < CLOUDFLARE_ATTEMPTS:
+            time.sleep(CLOUDFLARE_RETRY_SECONDS * attempt)
+    return None
+
+
+def _cloudflare_request(account: str, token: str, model: str, prompt: str) -> tuple[Image.Image | None, str]:
     try:
         response = requests.post(
             f"https://api.cloudflare.com/client/v4/accounts/{account}/ai/run/{model}",
@@ -197,19 +212,22 @@ def generate_cloudflare_image(scene: str) -> Image.Image | None:
             json={"prompt": prompt, "steps": 8},
             timeout=120,
         )
-        payload = response.json() if response.headers.get("content-type", "").startswith("application/json") else {}
-        if not response.ok or not payload.get("success", False):
-            errors = "; ".join(str(e.get("message", e)) for e in payload.get("errors", [])) or f"HTTP {response.status_code}"
-            print(f"Warning: Cloudflare image generation failed — {errors}")
-            return None
-        image_b64 = (payload.get("result") or {}).get("image")
-        if not image_b64:
-            print("Warning: Cloudflare returned no image.")
-            return None
-        return Image.open(io.BytesIO(base64.b64decode(image_b64))).convert("RGB")
-    except Exception as exc:
-        print(f"Warning: Cloudflare image generation failed ({type(exc).__name__}).")
-        return None
+    except requests.RequestException as exc:
+        return None, type(exc).__name__
+    try:
+        payload = response.json()
+    except ValueError:
+        payload = {}
+    if not response.ok or not payload.get("success", False):
+        errors = "; ".join(str(e.get("message", e)) for e in payload.get("errors", []))
+        return None, errors or f"HTTP {response.status_code}"
+    image_b64 = (payload.get("result") or {}).get("image")
+    if not image_b64:
+        return None, "no image in response"
+    try:
+        return Image.open(io.BytesIO(base64.b64decode(image_b64))).convert("RGB"), ""
+    except (OSError, ValueError) as exc:
+        return None, type(exc).__name__
 
 
 def _generate_with_gemini_image(client, types, model: str, prompt: str, size: tuple[int, int]) -> bytes | None:
