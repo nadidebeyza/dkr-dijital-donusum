@@ -107,6 +107,18 @@ def resolve_instagram_account_id(
 
 def _account_id_from_page_token(token: str) -> str:
     """Look up the Instagram Business Account linked to the Page that owns this token."""
+    owner = requests.get(
+        f"{FACEBOOK_GRAPH_BASE}/me",
+        params={"fields": "id,name", "access_token": token},
+        timeout=30,
+    )
+    if not owner.ok:
+        raise RuntimeError(
+            "INSTAGRAM_ACCESS_TOKEN was rejected by the Graph API: "
+            f"{_graph_error_message(owner)}"
+        )
+    owner_name = owner.json().get("name", "?")
+
     response = requests.get(
         f"{FACEBOOK_GRAPH_BASE}/me",
         params={"fields": "instagram_business_account", "access_token": token},
@@ -115,12 +127,18 @@ def _account_id_from_page_token(token: str) -> str:
     if response.ok:
         linked = (response.json().get("instagram_business_account") or {}).get("id")
         if linked:
-            print("Note: INSTAGRAM_ACCOUNT_ID is empty — using the account linked to the Page token.")
+            print(f"Note: INSTAGRAM_ACCOUNT_ID is empty — using the Instagram account linked to Page '{owner_name}'.")
             return str(linked)
+        raise RuntimeError(
+            f"INSTAGRAM_ACCOUNT_ID is empty and Page '{owner_name}' has no linked Instagram business "
+            "account. Link the Instagram account to this Page (Page settings → Linked accounts → "
+            "Instagram) or set INSTAGRAM_ACCOUNT_ID."
+        )
     raise RuntimeError(
-        "Missing INSTAGRAM_ACCOUNT_ID in .env or GitHub Secrets, and it could not be resolved "
-        "from INSTAGRAM_ACCESS_TOKEN. Use a Page Access Token whose Page is linked to the "
-        "Instagram business account."
+        f"INSTAGRAM_ACCOUNT_ID is empty and INSTAGRAM_ACCESS_TOKEN belongs to '{owner_name}', which "
+        "looks like a User token, not a Page token. Run me/accounts in Graph API Explorer and use "
+        "the DKR Page's access_token. "
+        f"API response: {_graph_error_message(response)}"
     )
 
 
