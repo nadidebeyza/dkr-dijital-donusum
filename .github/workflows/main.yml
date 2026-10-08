@@ -1,0 +1,137 @@
+name: DKR Daily Instagram (Story & Post)
+
+on:
+  schedule:
+    - cron: "0 7 * * *"   # UTC 07:00 = TR 10:00 -> story
+    - cron: "0 14 * * *"  # UTC 14:00 = TR 17:00 -> post
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  run-story:
+    # Must match the schedule cron string character for character.
+    if: github.event.schedule == '0 7 * * *' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    concurrency:
+      group: dkr-story-${{ github.ref_name }}
+      cancel-in-progress: false
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Pull latest changes
+        run: git pull origin ${{ github.ref_name }} || true
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies & fonts
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fonts-liberation fonts-dejavu-core
+          pip install -r requirements.txt
+
+      - name: Run story automation
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          INSTAGRAM_ACCOUNT_ID: ${{ secrets.INSTAGRAM_ACCOUNT_ID }}
+          INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
+          INSTAGRAM_LOCATION_ID: ${{ secrets.INSTAGRAM_LOCATION_ID }}
+          BRAND_NAME: ${{ secrets.BRAND_NAME }}
+          BRAND_HANDLE: ${{ secrets.BRAND_HANDLE }}
+          BUSINESS_PHONE: ${{ secrets.BUSINESS_PHONE }}
+          BUSINESS_ADDRESS: ${{ secrets.BUSINESS_ADDRESS }}
+          BUSINESS_HOURS: ${{ secrets.BUSINESS_HOURS }}
+          BUSINESS_WEBSITE: ${{ secrets.BUSINESS_WEBSITE }}
+          LOCATION_LABEL: ${{ secrets.LOCATION_LABEL }}
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
+          GEMINI_IMAGE_MODEL: ${{ vars.GEMINI_IMAGE_MODEL }}
+        run: python story.py
+
+      - name: Commit story history
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add story_history.json
+          git diff --staged --quiet && exit 0
+          git commit -m "Update content history (story)"
+          for attempt in 1 2 3 4 5; do
+            git push && exit 0
+            echo "Push rejected (attempt $attempt) — rebasing onto remote"
+            git pull --rebase --autostash origin ${{ github.ref_name }}
+            sleep $((attempt * 5))
+          done
+          echo "Could not push content history after 5 attempts" >&2
+          exit 1
+
+  run-post:
+    # Must match the schedule cron string character for character.
+    if: github.event.schedule == '0 14 * * *' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    concurrency:
+      group: dkr-post-${{ github.ref_name }}
+      cancel-in-progress: false
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Pull latest changes
+        run: git pull origin ${{ github.ref_name }} || true
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies & fonts
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fonts-liberation fonts-dejavu-core
+          pip install -r requirements.txt
+
+      - name: Run post automation
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          INSTAGRAM_ACCOUNT_ID: ${{ secrets.INSTAGRAM_ACCOUNT_ID }}
+          INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
+          INSTAGRAM_LOCATION_ID: ${{ secrets.INSTAGRAM_LOCATION_ID }}
+          BRAND_NAME: ${{ secrets.BRAND_NAME }}
+          BRAND_HANDLE: ${{ secrets.BRAND_HANDLE }}
+          BUSINESS_PHONE: ${{ secrets.BUSINESS_PHONE }}
+          BUSINESS_ADDRESS: ${{ secrets.BUSINESS_ADDRESS }}
+          BUSINESS_HOURS: ${{ secrets.BUSINESS_HOURS }}
+          BUSINESS_WEBSITE: ${{ secrets.BUSINESS_WEBSITE }}
+          LOCATION_LABEL: ${{ secrets.LOCATION_LABEL }}
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
+          GEMINI_IMAGE_MODEL: ${{ vars.GEMINI_IMAGE_MODEL }}
+        run: python main.py
+
+      - name: Commit post history
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add post_history.json
+          git diff --staged --quiet && exit 0
+          git commit -m "Update content history (post)"
+          for attempt in 1 2 3 4 5; do
+            git push && exit 0
+            echo "Push rejected (attempt $attempt) — rebasing onto remote"
+            git pull --rebase --autostash origin ${{ github.ref_name }}
+            sleep $((attempt * 5))
+          done
+          echo "Could not push content history after 5 attempts" >&2
+          exit 1

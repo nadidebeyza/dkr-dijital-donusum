@@ -1,0 +1,60 @@
+{
+  "topics": [
+    {"topic_id": "kep-nedir", "pillar": "kep_bilgi", "description": "KEP nedir? Ticari, hukuki ve resmi yazışmaların elektronik ortamda yasal geçerlilikle yapılması.", "format": "carousel", "headline": "KEP nedir?", "photo_tags": ["ofis", "bilgisayar"]},
+    {"topic_id": "kep-vs-eposta", "pillar": "kep_bilgi", "description": "KEP ile standart e-posta arasındaki fark: inkâr edilemezlik, net kimlik, resmi zaman kaydı.", "format": "carousel", "headline": "KEP mi, e-posta mı?", "photo_tags": ["bilgisayar", "masa"]},
+    {"topic_id": "kep-kullanim-alanlari", "pillar": "kep_bilgi", "description": "KEP'in kullanım alanları: ihtarname, sözleşme, mutabakat, ihale, İK bildirimleri.", "format": "carousel", "headline": "KEP nerelerde kullanılır?", "photo_tags": ["ofis", "belge"]},
+    {"topic_id": "kep-delil-20-yil", "pillar": "kep_bilgi", "description": "KEP iletileri ve delil logları TÜRKKEP sistemlerinde 20 yıl saklanır.", "format": "single", "headline": "Delilleriniz 20 yıl güvende", "photo_tags": ["ofis", "bilgisayar"]},
+    {"topic_id": "kep-kesin-delil", "pillar": "kep_bilgi", "description": "KEP yazışmaları mahkemelerde kesin delil statüsündedir.", "format": "single", "headline": "Mahkemede kesin delil", "photo_tags": ["masa", "belge"]},
+    {"topic_id": "kep-maliyet-tasarrufu", "pillar": "kep_bilgi", "description": "Noter, kargo, kurye ve kağıt masraflarını azaltan KEP.", "format": "single", "headline": "Kargo ve kurye masrafına son", "photo_tags": ["ofis"]},
+    {"topic_id": "kep-zaman-kazanci", "pillar": "kep_bilgi", "description": "Günler süren kargo/noter süreçleri KEP ile saniyeler sürer.", "format": "story", "headline": "Günler değil, saniyeler", "photo_tags": ["telefon", "bilgisayar"]},
+    {"topic_id": "kep-cevre-dostu", "pillar": "kep_bilgi", "description": "Kağıt tüketimini azaltan çevre dostu ofisler.", "format": "story", "headline": "Kağıtsız ofis, yeşil gelecek", "photo_tags": ["ofis"]},
+    {"topic_id": "kep-izlenebilirlik", "pillar": "kep_bilgi", "description": "Gönderim, teslim ve okunma bilgilerinin kayıt altına alınması.", "format": "single", "headline": "Her ileti kayıt altında", "photo_tags": ["bilgisayar"]},
+    {"topic_id": "kep-zorunlu-sirketler", "pillar": "kep_bilgi", "description": "Anonim, limited ve sermayesi paya bölünmüş komandit şirketler için KEP zorunluluğu.", "format": "carousel", "headline": "Şirketiniz için KEP zorunlu mu?", "photo_tags": ["ofis", "bina"]},
+    {"topic_id": "kep-sahis-firmalari", "pillar": "kep_bilgi", "description": "Şahıs firmaları ve bireylerin KEP kullanımı.", "format": "single", "headline": "Şahıs firmaları için de KEP", "photo_tags": ["masa"]},
+    {"topic_id": "kep-mobil-yonetim", "pillar": "kep_bilgi", "description": "Ofis dışındayken telefondan veya bilgisayardan resmi yazışma yönetimi.", "format": "story", "headline": "Resmi yazışma cebinizde", "photo_tags": ["telefon"]},
+
+    {"topic_id": "eimza-nedir", "pillar": "eimza_bilgi", "description": "Elektronik imza nedir, belgeleri dijital ortamda güvenle imzalamak.", "format": "carousel", "headline": "E-imza nedir?", "photo_tags": ["imza", "bilgisayar"]},
+    {"topic_id": "eimza-islak-imza", "pillar": "eimza_bilgi", "description": "E-imza ıslak imza ile aynı hukuki geçerliliğe sahiptir.", "format": "single", "headline": "Islak imzayla aynı geçerlilik", "photo_tags": ["imza", "masa"]},
+    {"topic_id": "eimza-edevlet", "pillar": "eimza_bilgi", "description": "E-imzanın e-Devlet uyumluluğu.", "format": "single", "headline": "E-Devlet ile uyumlu e-imza", "photo_tags": ["bilgisayar"]},
+    {"topic_id": "eimza-zaman-tasarrufu", "pillar": "eimza_bilgi", "description": "E-imza ile zamandan ve evrak maliyetinden tasarruf.", "format": "story", "headline": "İmza için ofise gitmeyin", "photo_tags": ["imza"]},
+    {"topic_id": "eimza-guvenli-dogrulama", "pillar": "eimza_bilgi", "description": "E-imzanın güvenli doğrulama sistemi.", "format": "single", "headline": "Güvenli doğrulama, güvenli imza", "photo_tags": ["bilgisayar"]},
+    {"topic_id": "eimza-vs-kep", "pillar": "eimza_bilgi", "description": "E-imza ve KEP'in farklı görevleri ve birlikte kullanımı.", "format": "carousel", "headline": "E-imza ve KEP birlikte güçlü", "photo_tags": ["masa", "bilgisayar"]},
+    {"topic_id": "eimza-kimler-icin", "pillar": "eimza_bilgi", "description": "Şirket sahipleri, muhasebeciler, avukatlar ve bireyler için e-imza.", "format": "carousel", "headline": "E-imza kimlerin işini kolaylaştırır?", "photo_tags": ["ofis", "masa"]},
+    {"topic_id": "eimza-evrak-maliyeti", "pillar": "eimza_bilgi", "description": "E-imza evrak maliyetlerini azaltır.", "format": "story", "headline": "Daha az kağıt, daha az masraf", "photo_tags": ["masa"]},
+
+    {"topic_id": "basvuru-4-adim", "pillar": "basvuru_sureci", "description": "4 adımda başvuru: form, evrak kontrolü, onay, teslim ve aktivasyon.", "format": "carousel", "headline": "4 adımda kolay başvuru", "photo_tags": ["masa", "ofis"]},
+    {"topic_id": "basvuru-kurumsal-belgeler", "pillar": "basvuru_sureci", "description": "Kurumsal başvuruda gereken belgeler.", "format": "carousel", "headline": "Kurumsal başvuruda gerekli belgeler", "photo_tags": ["belge", "masa"]},
+    {"topic_id": "basvuru-uzaktan", "pillar": "basvuru_sureci", "description": "Fotoğraflı kimlik kontrolü, video görüşme ve mobil doğrulama ile uzaktan başvuru.", "format": "carousel", "headline": "Ofise gelmeden başvurun", "photo_tags": ["telefon", "bilgisayar"]},
+    {"topic_id": "basvuru-yuz-yuze", "pillar": "basvuru_sureci", "description": "Acıbadem ofisinde yüz yüze başvuru.", "format": "single", "headline": "Yüz yüze başvuru Acıbadem'de", "photo_tags": ["ofis", "tabela"]},
+    {"topic_id": "basvuru-yenileme-hatirlatma", "pillar": "basvuru_sureci", "description": "E-imza sertifika yenileme hatırlatması.", "format": "story", "headline": "E-imzanızın süresini kontrol edin", "photo_tags": ["imza", "masa"]},
+    {"topic_id": "basvuru-evrak-kontrolu", "pillar": "basvuru_sureci", "description": "Belgelerin uzman ekip tarafından incelenmesi.", "format": "single", "headline": "Evraklarınızı uzman ekip inceler", "photo_tags": ["belge", "ekip"]},
+    {"topic_id": "basvuru-aktivasyon", "pillar": "basvuru_sureci", "description": "KEP veya e-imzanın aktif olarak teslim edilmesi.", "format": "story", "headline": "Teslim ve aktivasyon bizden", "photo_tags": ["bilgisayar"]},
+
+    {"topic_id": "kurumsal-toplu-basvuru", "pillar": "kurumsal", "description": "Personel toplu KEP ve e-imza başvurusu.", "format": "carousel", "headline": "Tüm ekibiniz için tek başvuru", "photo_tags": ["ekip", "ofis"]},
+    {"topic_id": "kurumsal-yenileme-takibi", "pillar": "kurumsal", "description": "Yenileme takip hizmeti ile süreleri kaçırmayın.", "format": "single", "headline": "Yenileme tarihlerini biz takip edelim", "photo_tags": ["masa"]},
+    {"topic_id": "kurumsal-uzaktan-kurulum", "pillar": "kurumsal", "description": "Uzaktan kurulum desteği.", "format": "single", "headline": "Kurulum uzaktan, hızlı ve kolay", "photo_tags": ["bilgisayar"]},
+    {"topic_id": "kurumsal-evrak-danismanligi", "pillar": "kurumsal", "description": "Şirket evrak danışmanlığı.", "format": "single", "headline": "Şirket evraklarınızda yanınızdayız", "photo_tags": ["belge", "ofis"]},
+    {"topic_id": "kurumsal-teknik-danismanlik", "pillar": "kurumsal", "description": "Teknik danışmanlık ve sistem desteği.", "format": "story", "headline": "Teknik sorulara uzman cevap", "photo_tags": ["bilgisayar", "ekip"]},
+    {"topic_id": "kurumsal-7-24-destek", "pillar": "kurumsal", "description": "Başvurudan sonra 7/24 teknik destek.", "format": "single", "headline": "Başvurudan sonra da yanınızdayız", "photo_tags": ["telefon"]},
+    {"topic_id": "kurumsal-muhasebeciler", "pillar": "kurumsal", "description": "Muhasebe ofisleri ve mükellefleri için toplu çözümler.", "format": "carousel", "headline": "Muhasebe ofisleri için kolay çözüm", "photo_tags": ["ofis", "masa"]},
+
+    {"topic_id": "sss-kep-zorunlu-mu", "pillar": "sss", "description": "Sık sorulan: Şirketim için KEP zorunlu mu?", "format": "story", "headline": "KEP zorunlu mu?", "photo_tags": ["ofis"]},
+    {"topic_id": "sss-eimza-yerine-kep", "pillar": "sss", "description": "Sık sorulan: E-imza yerine KEP kullanabilir miyiz?", "format": "single", "headline": "E-imza yerine KEP olur mu?", "photo_tags": ["masa"]},
+    {"topic_id": "sss-uzaktan-nasil", "pillar": "sss", "description": "Sık sorulan: Uzaktan işlemler nasıl yürütülüyor?", "format": "single", "headline": "Uzaktan başvuru nasıl olur?", "photo_tags": ["telefon"]},
+    {"topic_id": "sss-kadikoy-uskudar", "pillar": "sss", "description": "Sık sorulan: Üsküdar ve Kadıköy'den başvuru yapabilir miyim?", "format": "story", "headline": "Kadıköy'den başvurabilir miyim?", "photo_tags": ["ulasim", "bina"]},
+    {"topic_id": "sss-destek-yenileme", "pillar": "sss", "description": "Sık sorulan: Destek ve yenileme süreçleri nasıl işliyor?", "format": "single", "headline": "Yenileme ve destek nasıl işler?", "photo_tags": ["masa"]},
+    {"topic_id": "sss-dkr-nedir", "pillar": "sss", "description": "Sık sorulan: DKR TÜRKKEP Başvuru Merkezi nedir?", "format": "story", "headline": "DKR TÜRKKEP Başvuru Merkezi kimdir?", "photo_tags": ["ofis", "tabela"]},
+
+    {"topic_id": "konum-acibademdeyiz", "pillar": "konum_guven", "description": "Acıbadem'deyiz: ofis konumu ve kolay ulaşım.", "format": "story", "headline": "Acıbadem'deyiz", "photo_tags": ["bina", "tabela"]},
+    {"topic_id": "konum-calisma-saatleri", "pillar": "konum_guven", "description": "Çalışma saatleri ve randevu.", "format": "story", "headline": "Hafta içi hizmetinizdeyiz", "photo_tags": ["ofis"]},
+    {"topic_id": "konum-yetkili-merkez", "pillar": "konum_guven", "description": "Yetkili TÜRKKEP başvuru merkezi vurgusu.", "format": "single", "headline": "Yetkili TÜRKKEP başvuru merkezi", "photo_tags": ["tabela", "ofis"]},
+    {"topic_id": "konum-anadolu-yakasi", "pillar": "konum_guven", "description": "Anadolu Yakası'nın birçok noktasından kolay ulaşım.", "format": "single", "headline": "Anadolu Yakası'na yakınız", "photo_tags": ["ulasim", "bina"]},
+    {"topic_id": "konum-randevu", "pillar": "konum_guven", "description": "Randevu alarak beklemeden başvuru.", "format": "story", "headline": "Randevu alın, beklemeyin", "photo_tags": ["telefon", "ofis"]},
+
+    {"topic_id": "cta-bugun-basvur", "pillar": "cta_kampanya", "description": "Bugün KEP veya e-imza başvurunuzu başlatın.", "format": "story", "headline": "Başvurunuzu bugün başlatın", "photo_tags": ["ofis"]},
+    {"topic_id": "cta-bizi-arayin", "pillar": "cta_kampanya", "description": "Sorularınız için bizi arayın veya DM atın.", "format": "single", "headline": "Sorunuz mu var? Bize yazın", "photo_tags": ["telefon"]},
+    {"topic_id": "cta-sirket-kurulumu", "pillar": "cta_kampanya", "description": "Yeni şirket kuranlar için KEP ve e-imza çağrısı.", "format": "carousel", "headline": "Yeni şirket mi kurdunuz?", "photo_tags": ["ofis", "bina"]},
+    {"topic_id": "cta-dijital-donusum", "pillar": "cta_kampanya", "description": "İşletmenizin dijital dönüşümünü başlatın.", "format": "single", "headline": "Dijital dönüşüme bugün başlayın", "photo_tags": ["bilgisayar", "ofis"]},
+    {"topic_id": "cta-ekip-basvurusu", "pillar": "cta_kampanya", "description": "Ekibiniz için toplu başvuru çağrısı.", "format": "story", "headline": "Ekibiniz için bize ulaşın", "photo_tags": ["ekip"]}
+  ]
+}

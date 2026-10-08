@@ -1,0 +1,4 @@
+{
+  "_doc": "Add real, permission-cleared photos to assets/photos/ and list their tags here. Example: {\"file\": \"ofis-01.jpg\", \"tags\": [\"ofis\", \"masa\"]}. Allowed tags: ofis, tabela, masa, imza, bilgisayar, ekip, bina, ulasim, belge, telefon.",
+  "photos": []
+}

@@ -1,0 +1,112 @@
+{
+  "_source": "DKR TÜRKKEP Başvuru Merkezi web sitesi. Contact details (phone, address, hours, website) live in env variables, not here.",
+  "business": {
+    "name": "DKR TÜRKKEP Başvuru Merkezi",
+    "legal_entity": "DKR Sağlık Eğitim Otomotiv Ticaret ve Pazarlama Ltd. Şti.",
+    "description": "Üsküdar Acıbadem'de faaliyet gösteren yetkili TÜRKKEP başvuru merkezi. Bireysel ve kurumsal müşterilere KEP (Kayıtlı Elektronik Posta) ve Elektronik İmza çözümleri sunar.",
+    "location": "Acıbadem, Üsküdar, İstanbul Anadolu Yakası",
+    "service_area": ["Üsküdar", "Acıbadem", "Kadıköy", "Ataşehir", "İstanbul Anadolu Yakası"],
+    "visit_options": ["Ofise gelerek yüz yüze başvuru", "Uzaktan kimlik doğrulama ile başvuru"],
+    "appointment": "Randevu için telefonla ulaşılabilir."
+  },
+  "services": [
+    {
+      "id": "kep",
+      "name": "KEP (Kayıtlı Elektronik Posta) başvurusu",
+      "summary": "Yasal geçerliliğe sahip elektronik posta sistemiyle güvenli iletişim.",
+      "advantages": [
+        "Resmi yazışmalarda yasal geçerlilik",
+        "Güvenli veri transferi",
+        "Zaman damgalı gönderim",
+        "Düşük operasyon maliyeti",
+        "Hızlı ve kolay kullanım"
+      ]
+    },
+    {
+      "id": "eimza",
+      "name": "Elektronik İmza (e-imza) başvurusu ve yenileme",
+      "summary": "Belgeleri dijital ortamda güvenli ve yasal olarak imzalama.",
+      "advantages": [
+        "Islak imza ile aynı hukuki geçerlilik",
+        "Zamandan tasarruf",
+        "Evrak maliyetlerini azaltır",
+        "E-Devlet uyumluluğu",
+        "Güvenli doğrulama sistemi"
+      ]
+    },
+    {
+      "id": "kurumsal",
+      "name": "Kurumsal çözümler",
+      "summary": "Şirketler için toplu KEP ve e-imza çözümleri.",
+      "items": [
+        "Personel toplu başvuru işlemleri",
+        "Şirket evrak danışmanlığı",
+        "Uzaktan kurulum desteği",
+        "Teknik danışmanlık",
+        "Yenileme takip hizmeti"
+      ]
+    },
+    {
+      "id": "destek",
+      "name": "Uzaktan destek ve teknik destek",
+      "summary": "Başvurudan sonra 7/24 teknik destek; sertifika yenileme, iptal, kayıt takipleri ve raporlama talepleri merkez tarafından yönetilir."
+    }
+  ],
+  "kep_facts": {
+    "definition": "KEP; her türlü ticari, hukuki ve resmi yazışmanın elektronik ortamda mevzuata uygun, güvenli ve uluslararası standartlarda yapılmasını sağlayan bir sistemdir.",
+    "difference_from_email": [
+      "Standart e-postadan en büyük farkı gönderinin inkâr edilemezliğidir.",
+      "Gönderen ve alan kişinin kimlikleri nettir.",
+      "İletinin gönderilme ve teslim alınma zamanı resmi olarak kaydedilir.",
+      "İçeriğin yolda değiştirilmediği kriptografik olarak garanti altına alınır.",
+      "KEP üzerinden yapılan bir yazışma mahkemelerde kesin delil statüsünde kabul edilir."
+    ],
+    "advantages": [
+      {"title": "Yasal güvence ve kesin delil", "detail": "Bildirimler, ihtarnameler, ihbarlar ve sözleşmeler yasal olarak bağlayıcıdır."},
+      {"title": "Maliyet tasarrufu", "detail": "Noter, kargo, kurye, kağıt ve arşivleme masraflarını azaltır."},
+      {"title": "Zaman ve operasyon kolaylığı", "detail": "Günler süren kargo veya noter süreçleri KEP ile saniyeler sürer; telefondan veya bilgisayardan yönetilebilir."},
+      {"title": "Çevre dostu", "detail": "Kağıt tüketimini azaltır, karbon ayak izini düşürür."},
+      {"title": "Güvenli dijital arşiv", "detail": "Gelen ve giden tüm KEP iletileri ve delil logları TÜRKKEP sistemlerinde 20 yıl boyunca saklanır."},
+      {"title": "Denetlenebilirlik ve izlenebilirlik", "detail": "Her iletinin gönderim, teslim ve okunma bilgileri kayıt altına alınır."}
+    ],
+    "use_cases": [
+      "İhtarname, ihbar ve beyannamelerin gönderilmesi",
+      "Sözleşme teklifleri ve onay süreçleri",
+      "Ticari ortaklar arasında mutabakat ve hesap ekstrelerinin paylaşımı",
+      "İhale ve teklif süreçlerinin takibi",
+      "Şirket içi insan kaynakları bildirimleri (ücret bordroları, izin formları vb.)"
+    ],
+    "obligation": "Mevzuat gereği anonim, limited ve sermayesi paya bölünmüş komandit şirketler için KEP adresi edinmek zorunludur. Şahıs firmaları ve bireyler de KEP adresini yoğun şekilde kullanmaktadır.",
+    "kep_vs_eimza": "E-imza belgenin kim tarafından imzalandığını kanıtlar, KEP ise belgenin teslim ve iletimini güvenli kılar. İkisi birlikte hukuki olarak güçlü dijital süreçler kurar."
+  },
+  "application_summary": "4 adımda kolay başvuru.",
+  "application_steps": [
+    {"step": 1, "title": "Başvuru Formu", "detail": "Online veya ofisten başvuru oluşturulur."},
+    {"step": 2, "title": "Evrak Kontrolü", "detail": "Belgeler uzman ekip tarafından incelenir."},
+    {"step": 3, "title": "Onay Süreci", "detail": "Kimlik doğrulama ve sistem kayıt işlemleri yapılır."},
+    {"step": 4, "title": "Teslim ve Aktivasyon", "detail": "KEP veya e-imza aktif olarak teslim edilir."}
+  ],
+  "corporate_documents": [
+    "Ticaret sicil gazetesi",
+    "İmza sirküleri",
+    "Noter tasdikli vekalet",
+    "Yetkilendirme yazısı",
+    "Talep durumunda personel listesi ve iletişim bilgileri"
+  ],
+  "remote_process": "Fotoğraflı kimlik kontrolü, canlı video görüşmesi ve mobil doğrulama adımlarıyla uzaktan başvuru yapılabilir. Evraklar dijital ortamda paylaşılır, güvenli kanal üzerinden onaylanır ve aktivasyon tamamlanır.",
+  "regulation": "KEP ve e-imza süreçleri, TÜRKKEP yetkili başvuru merkezi olarak ilgili mevzuata uygun şekilde tamamlanır.",
+  "faq": [
+    {"q": "DKR TÜRKKEP Başvuru Merkezi nedir?", "a": "Üsküdar Acıbadem'de hizmet veren yetkili TÜRKKEP başvuru merkezidir. KEP ve e-imza başvurusu, yenileme, kurumsal çözümler ve teknik destek sunar."},
+    {"q": "Kurumsal başvuruda hangi belgeler gerekir?", "a": "Ticaret sicil gazetesi, imza sirküleri, noter tasdikli vekalet, yetkilendirme yazısı gibi kurumsal evraklar; talep durumunda personel listesi ve iletişim bilgileri."},
+    {"q": "E-imza yerine KEP kullanabilir miyiz?", "a": "İkisinin farklı görevleri vardır: e-imza belgenin kim tarafından imzalandığını kanıtlar, KEP ise belgenin teslim ve iletimini güvenli kılar. İkisi birlikte kullanılır."},
+    {"q": "Uzaktan işlemler nasıl yürütülüyor?", "a": "Fotoğraflı kimlik kontrolü, canlı video görüşmesi ve mobil doğrulama ile uzaktan başvuru yapılabilir."},
+    {"q": "Acıbadem'de KEP ve e-imza başvurusu nereden yapılır?", "a": "DKR TÜRKKEP Başvuru Merkezi, Acıbadem'deki ofisinde yüz yüze veya uzaktan başvuru alır."},
+    {"q": "Üsküdar ve Kadıköy'den e-imza başvurusu yapabilir miyim?", "a": "Evet. Merkeze gelerek veya uzaktan kimlik doğrulama ile tamamlanabilir. Anadolu Yakası'nın birçok noktasından kolay ulaşım vardır."},
+    {"q": "Destek ve yenileme süreçleri nasıl işliyor?", "a": "Başvurudan sonra 7/24 teknik destek sağlanır; sertifika yenileme, iptal, kayıt takipleri ve raporlama talepleri merkez tarafından yönetilir."}
+  ],
+  "forbidden": [
+    "Fiyat, ücret, indirim veya kampanya bilgisi verilmez.",
+    "Dosyada olmayan süre, rakam, yüzde veya garanti yazılmaz.",
+    "TÜRKKEP adına resmi açıklama yapılmaz."
+  ]
+}
