@@ -44,6 +44,15 @@
       "fingerprint": "basvuru-uzaktan::yerinizden kalkmadan uzaktan başvuru yapın",
       "photos": [],
       "published_at": "2026-10-08T23:09:09+00:00"
+    },
+    {
+      "topic_id": "eimza-vs-kep",
+      "pillar": "eimza_bilgi",
+      "format": "carousel",
+      "headline": "E-İmza ile KEP Arasındaki Fark Nedir?",
+      "fingerprint": "eimza-vs-kep::e imza ile kep arasındaki fark nedir",
+      "photos": [],
+      "published_at": "2026-10-09T19:19:15+00:00"
     }
   ]
 }
