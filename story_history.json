@@ -44,6 +44,15 @@
       "fingerprint": "konum-acibademdeyiz::acıbadem de kolay ulaşım noktası",
       "photos": [],
       "published_at": "2026-10-08T22:57:38+00:00"
+    },
+    {
+      "topic_id": "kep-mobil-yonetim",
+      "pillar": "kep_bilgi",
+      "format": "story",
+      "headline": "Resmi Yazışmalarınızı Her Yerden Kolayca Yönetin",
+      "fingerprint": "kep-mobil-yonetim::resmi yazışmalarınızı her yerden kolayca yönetin",
+      "photos": [],
+      "published_at": "2026-10-09T14:10:36+00:00"
     }
   ]
 }
