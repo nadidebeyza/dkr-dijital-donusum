@@ -53,6 +53,15 @@
       "fingerprint": "kep-mobil-yonetim::resmi yazışmalarınızı her yerden kolayca yönetin",
       "photos": [],
       "published_at": "2026-10-09T14:10:36+00:00"
+    },
+    {
+      "topic_id": "basvuru-aktivasyon",
+      "pillar": "basvuru_sureci",
+      "format": "story",
+      "headline": "KEP ve E-İmzanız Aktif Olarak Teslim Edilir",
+      "fingerprint": "basvuru-aktivasyon::kep ve e imzanız aktif olarak teslim edilir",
+      "photos": [],
+      "published_at": "2026-10-10T13:19:52+00:00"
     }
   ]
 }
