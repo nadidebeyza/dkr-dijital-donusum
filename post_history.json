@@ -53,6 +53,15 @@
       "fingerprint": "eimza-vs-kep::e imza ile kep arasındaki fark nedir",
       "photos": [],
       "published_at": "2026-10-09T19:19:15+00:00"
+    },
+    {
+      "topic_id": "kep-zorunlu-sirketler",
+      "pillar": "kep_bilgi",
+      "format": "carousel",
+      "headline": "Hangi Şirketler İçin KEP Zorunludur?",
+      "fingerprint": "kep-zorunlu-sirketler::hangi şirketler için kep zorunludur",
+      "photos": [],
+      "published_at": "2026-10-10T18:16:03+00:00"
     }
   ]
 }
