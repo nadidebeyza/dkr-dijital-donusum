@@ -62,6 +62,15 @@
       "fingerprint": "kep-zorunlu-sirketler::hangi şirketler için kep zorunludur",
       "photos": [],
       "published_at": "2026-10-10T18:16:03+00:00"
+    },
+    {
+      "topic_id": "kurumsal-toplu-basvuru",
+      "pillar": "kurumsal",
+      "format": "carousel",
+      "headline": "Şirketiniz İçin Toplu KEP ve E-İmza",
+      "fingerprint": "kurumsal-toplu-basvuru::şirketiniz için toplu kep ve e imza",
+      "photos": [],
+      "published_at": "2026-10-12T22:01:30+00:00"
     }
   ]
 }
