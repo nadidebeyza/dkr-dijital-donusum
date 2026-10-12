@@ -62,6 +62,15 @@
       "fingerprint": "basvuru-aktivasyon::kep ve e imzanız aktif olarak teslim edilir",
       "photos": [],
       "published_at": "2026-10-10T13:19:52+00:00"
+    },
+    {
+      "topic_id": "eimza-evrak-maliyeti",
+      "pillar": "eimza_bilgi",
+      "format": "story",
+      "headline": "E-İmza ile Evrak Maliyetlerinizi Azaltın",
+      "fingerprint": "eimza-evrak-maliyeti::e imza ile evrak maliyetlerinizi azaltın",
+      "photos": [],
+      "published_at": "2026-10-12T16:33:23+00:00"
     }
   ]
 }
