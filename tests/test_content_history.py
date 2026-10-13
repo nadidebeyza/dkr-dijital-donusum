@@ -201,3 +201,28 @@ def test_normalize_plan_forces_story_and_carousel_rules():
         normalize_plan({**data, "slides": [{"headline": "Tek"}]}, "post", "carousel")
     with pytest.raises(ValueError):
         normalize_plan({**data, "topic_id": "uydurma-konu"}, "post")
+
+
+def test_visual_types_choose_matching_style():
+    from image_gen import build_image_prompt
+
+    digital = build_image_prompt("a glowing shield over a digital envelope", "digital")
+    assert "3D digital illustration" in digital and "Turkish people" not in digital
+    assert "no text" in digital
+
+    place = build_image_prompt("", "place")
+    assert "Üsküdar" in place and "Turkish people" not in place
+
+    people = build_image_prompt("an accountant at her desk", "bilinmeyen")
+    assert "photorealistic editorial photograph" in people and "Turkish people" in people
+
+    data = {
+        "topic_id": "kep-nedir",
+        "format": "single",
+        "slides": [{"headline": "Kep Nedir", "visual": "Digital", "image_prompt": "x"}],
+        "caption": "Metin",
+        "hashtags": [],
+    }
+    assert normalize_plan(data, "post").slides[0].visual == "digital"
+    data["slides"][0]["visual"] = "cartoon"
+    assert normalize_plan(data, "post").slides[0].visual == "people"

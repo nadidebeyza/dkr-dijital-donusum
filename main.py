@@ -123,6 +123,7 @@ def render_plan(plan: ContentPlan, kind: Kind, out_dir: Path) -> tuple[list[Path
             size=size,
             usage=usage,
             exclude=used,
+            visual=slide.visual,
         )
         if source.photo:
             used.add(source.photo)
@@ -130,7 +131,7 @@ def render_plan(plan: ContentPlan, kind: Kind, out_dir: Path) -> tuple[list[Path
             source = SlideImage(ImageOps.mirror(last_real), "reused")
         elif source.source != "fallback":
             last_real = source.image
-        print(f"Slide {index + 1}: background from {source.source}")
+        print(f"Slide {index + 1}: {slide.visual} visual from {source.source}")
 
         name = "final_story.png" if kind == "story" else f"final_post_{index + 1}.png"
         paths.append(canvas.save_image(canvas.render_slide(source.image, size, text), out_dir / name))

@@ -39,6 +39,15 @@ class Slide:
     headline: str
     subline: str = ""
     image_prompt: str = ""
+    visual: str = "people"
+
+
+VISUAL_TYPES = ("people", "digital", "place")
+
+
+def _normalize_visual(raw: Any) -> str:
+    value = str(raw or "").strip().lower()
+    return value if value in VISUAL_TYPES else "people"
 
 
 @dataclass
@@ -106,7 +115,7 @@ Return ONLY a JSON object:
   "pillar": "<that topic's pillar>",
   "format": "{format_value}",
   "slides": [
-    {{"headline": "Türkçe başlık", "subline": "", "image_prompt": "English, photorealistic scene description"}}
+    {{"headline": "Türkçe başlık", "subline": "", "visual": "people|digital|place", "image_prompt": "English scene description"}}
   ],
   "caption": "Türkçe caption",
   "hashtags": ["#kep", "#eimza"]
@@ -119,7 +128,11 @@ Rules:
 3. NEVER invent prices, fees, durations, discounts, campaigns, percentages, legal claims or guarantees. Use numbers ONLY if they appear in the business facts. Never write "TL", "%", "ücretsiz", "indirim", "kampanya" or "fiyat".
 4. Do not speak on behalf of TÜRKKEP; no official announcements.
 5. Only mention the services listed in the facts.
-6. image_prompt: English, an eye-catching, emotional real-world photo that fits the slide. Prefer people: e.g. a Turkish accountant smiling at her desk, a lawyer relaxed after finishing work on a laptop, a young entrepreneur on the phone in a bright café-office, a small business owner shaking hands, a team celebrating in a modern Istanbul office, Üsküdar/Bosphorus view through an office window. Describe the person, action, emotion, setting, light and camera angle. Laptop and phone screens face away from the camera. No text, logos, documents with content or ID cards in the scene. EVERY slide shows real-looking people (the CTA slide: a friendly consultant on the phone or welcoming a client). Each slide uses a different scene.
+6. visual + image_prompt (English): pick the visual type that best fits each slide and vary it — do not show people on every slide or every day.
+   - "people": eye-catching, emotional real-world photo, e.g. a Turkish accountant smiling at her desk, a lawyer relaxed after finishing work on a laptop, a young entrepreneur on the phone in a bright café-office, a small business owner shaking hands. Describe the person, action, emotion, setting, light and camera angle; laptop and phone screens face away from the camera.
+   - "digital": polished 3D/digital concept art about the slide's topic, e.g. a glowing digital envelope sealed with a shield (KEP), a pen drawing a light trail on a tablet (e-imza), a secure USB token on a desk with blue light, a padlock over a network of connected documents, a cloud with a shield, a smartphone with a fingerprint glow, abstract data lines flowing over an Istanbul skyline at night. Describe the object, materials, light and mood.
+   - "place": our neighbourhood on Istanbul's Asian side, e.g. Üsküdar waterfront with Maiden's Tower, Bosphorus at sunset, a leafy Acıbadem street with modern buildings, a bright office window overlooking Üsküdar. Use it mainly for location/trust topics.
+   Good mix: a carousel uses at least two different visual types; the CTA slide is "people" (a friendly consultant on the phone or welcoming a client) or "place". No text, letters, logos, documents with content or ID cards in any scene. Each slide uses a different scene.
 7. hashtags: 3-8 lowercase Turkish service hashtags.
 8. Do NOT reuse any topic_id or headline from "Recently published" and do not use pillars on cooldown.
 {carousel_rules}
@@ -217,6 +230,7 @@ def normalize_plan(data: dict[str, Any], kind: Kind, requested_format: PostForma
             headline=title_case(_clip_words(str(s.get("headline", "")), config.HEADLINE_MAX_WORDS)),
             subline=sentence_case(str(s.get("subline", "") or "")),
             image_prompt=str(s.get("image_prompt", "") or "").strip(),
+            visual=_normalize_visual(s.get("visual")),
         )
         for s in raw_slides
         if isinstance(s, dict)
@@ -433,7 +447,14 @@ def offline_plan(
         )
         slides = [cover]
         if fmt == "carousel":
-            slides.append(Slide(headline="Uzman ekip, hızlı süreç", subline="Yüz yüze veya uzaktan başvuru"))
+            slides.append(
+                Slide(
+                    headline="Uzman ekip, hızlı süreç",
+                    subline="Yüz yüze veya uzaktan başvuru",
+                    visual="digital",
+                    image_prompt="a glowing digital envelope sealed with a shield and padlock floating above a laptop",
+                )
+            )
             slides.append(Slide(headline=CTA_HEADLINE))
 
         plan = ContentPlan(

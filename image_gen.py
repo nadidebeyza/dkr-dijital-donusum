@@ -19,10 +19,27 @@ import config
 
 PHOTO_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp"}
 
-IMAGE_PROMPT_STYLE = (
-    "photorealistic editorial photograph, natural light, modern Istanbul office / professional context, "
-    "shallow depth of field, warm inviting colors, vertical composition, main subject in the upper two thirds"
-)
+VISUAL_STYLES = {
+    "people": (
+        "photorealistic editorial photograph, natural light, modern Istanbul office / professional context, "
+        "shallow depth of field, warm inviting colors, vertical composition, main subject in the upper two thirds"
+    ),
+    "digital": (
+        "premium 3D digital illustration, glossy materials, soft studio lighting, depth of field, "
+        "deep navy and royal blue palette with white highlights and a small red accent, clean modern tech aesthetic, "
+        "vertical composition, main subject in the upper two thirds"
+    ),
+    "place": (
+        "photorealistic travel photograph of Istanbul's Asian side (Üsküdar, Acıbadem, Bosphorus), "
+        "golden hour light, vivid but natural colors, vertical composition, main subject in the upper two thirds"
+    ),
+}
+DEFAULT_VISUAL = "people"
+DEFAULT_SCENES = {
+    "people": "a Turkish business owner smiling while working on a laptop in a bright modern office",
+    "digital": "a glowing digital envelope sealed with a shield and padlock floating above a laptop",
+    "place": "the Üsküdar waterfront and Maiden's Tower at golden hour with the Bosphorus behind",
+}
 IMAGE_PROMPT_BANS = (
     "no text, no letters, no logos, no watermarks, no ID cards, "
     "no documents with readable content, no screens with readable text"
@@ -45,10 +62,16 @@ class SlideImage:
     photo: str | None = None
 
 
-def build_image_prompt(scene: str) -> str:
-    scene = scene.strip() or "a Turkish business owner smiling while working on a laptop in a bright modern office"
-    parts = [scene, IMAGE_PROMPT_STYLE, IMAGE_PROMPT_BANS]
-    if any(word in scene.lower() for word in PEOPLE_WORDS):
+def normalize_visual(visual: str | None) -> str:
+    value = (visual or "").strip().lower()
+    return value if value in VISUAL_STYLES else DEFAULT_VISUAL
+
+
+def build_image_prompt(scene: str, visual: str | None = None) -> str:
+    style = normalize_visual(visual)
+    scene = scene.strip() or DEFAULT_SCENES[style]
+    parts = [scene, VISUAL_STYLES[style], IMAGE_PROMPT_BANS]
+    if style == "people" or any(word in scene.lower() for word in PEOPLE_WORDS):
         parts.append(PEOPLE_RULE)
     return ", ".join(parts)
 
@@ -139,14 +162,14 @@ def _aspect_ratio(size: tuple[int, int]) -> str:
 _gemini_images_disabled = False
 
 
-def generate_ai_image(scene: str, size: tuple[int, int]) -> Image.Image | None:
+def generate_ai_image(scene: str, size: tuple[int, int], visual: str | None = None) -> Image.Image | None:
     global _gemini_images_disabled
     if _gemini_images_disabled:
         return None
     model = _available_image_model()
     if model is None:
         return None
-    prompt = build_image_prompt(scene)
+    prompt = build_image_prompt(scene, visual)
     try:
         from google import genai
         from google.genai import types
@@ -185,14 +208,14 @@ CLOUDFLARE_ATTEMPTS = 3
 CLOUDFLARE_RETRY_SECONDS = 6
 
 
-def generate_cloudflare_image(scene: str) -> Image.Image | None:
+def generate_cloudflare_image(scene: str, visual: str | None = None) -> Image.Image | None:
     """Cloudflare Workers AI (FLUX); free daily allowance. Returns a square image or None."""
     account = config.env("CLOUDFLARE_ACCOUNT_ID")
     token = config.env("CLOUDFLARE_API_TOKEN")
     if not account or not token:
         return None
     model = config.env("CLOUDFLARE_IMAGE_MODEL", CLOUDFLARE_DEFAULT_MODEL)
-    prompt = build_image_prompt(scene)[:CLOUDFLARE_PROMPT_LIMIT]
+    prompt = build_image_prompt(scene, visual)[:CLOUDFLARE_PROMPT_LIMIT]
     for attempt in range(1, CLOUDFLARE_ATTEMPTS + 1):
         image, error = _cloudflare_request(account, token, model, prompt)
         if image is not None:
@@ -339,19 +362,21 @@ def get_slide_image(
     size: tuple[int, int],
     usage: dict[str, int],
     exclude: set[str] | None = None,
+    visual: str | None = None,
 ) -> SlideImage:
-    photo = select_photo(photo_tags, usage, exclude)
+    style = normalize_visual(visual)
+    photo = None if style == "digital" else select_photo(photo_tags, usage, exclude)
     if photo is not None:
         try:
             return SlideImage(Image.open(photo).convert("RGB"), "photo", _rel(photo))
         except OSError:
             print(f"Warning: could not open {photo.name} — trying the next source.")
 
-    generated = generate_ai_image(scene, size)
+    generated = generate_ai_image(scene, size, style)
     if generated is not None:
         return SlideImage(generated, "gemini")
 
-    generated = generate_cloudflare_image(scene)
+    generated = generate_cloudflare_image(scene, style)
     if generated is not None:
         return SlideImage(generated, "cloudflare")
 
