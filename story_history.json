@@ -80,6 +80,15 @@
       "fingerprint": "kurumsal-7-24-destek::başvurudan sonra 7 24 teknik destek",
       "photos": [],
       "published_at": "2026-10-13T14:50:21+00:00"
+    },
+    {
+      "topic_id": "kep-delil-20-yil",
+      "pillar": "kep_bilgi",
+      "format": "story",
+      "headline": "KEP İletileri ve Delil Logları Arşivlenir",
+      "fingerprint": "kep-delil-20-yil::kep iletileri ve delil logları arşivlenir",
+      "photos": [],
+      "published_at": "2026-10-14T12:41:29+00:00"
     }
   ]
 }
