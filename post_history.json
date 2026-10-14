@@ -80,6 +80,15 @@
       "fingerprint": "eimza-kimler-icin::elektronik imza kimler için gereklidir",
       "photos": [],
       "published_at": "2026-10-13T20:08:05+00:00"
+    },
+    {
+      "topic_id": "kep-delil-20-yil",
+      "pillar": "kep_bilgi",
+      "format": "single",
+      "headline": "KEP İletileri Yirmi Yıl Saklanır",
+      "fingerprint": "kep-delil-20-yil::kep iletileri yirmi yıl saklanır",
+      "photos": [],
+      "published_at": "2026-10-14T18:20:25+00:00"
     }
   ]
 }
