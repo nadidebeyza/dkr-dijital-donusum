@@ -89,6 +89,15 @@
       "fingerprint": "kep-delil-20-yil::kep iletileri ve delil logları arşivlenir",
       "photos": [],
       "published_at": "2026-10-14T12:41:29+00:00"
+    },
+    {
+      "topic_id": "basvuru-uzaktan",
+      "pillar": "basvuru_sureci",
+      "format": "story",
+      "headline": "Uzaktan Kimlik Doğrulama ile Kolay Başvuru",
+      "fingerprint": "basvuru-uzaktan::uzaktan kimlik doğrulama ile kolay başvuru",
+      "photos": [],
+      "published_at": "2026-10-15T12:30:41+00:00"
     }
   ]
 }
