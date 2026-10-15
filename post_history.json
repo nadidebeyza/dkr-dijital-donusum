@@ -89,6 +89,15 @@
       "fingerprint": "kep-delil-20-yil::kep iletileri yirmi yıl saklanır",
       "photos": [],
       "published_at": "2026-10-14T18:20:25+00:00"
+    },
+    {
+      "topic_id": "basvuru-kurumsal-belgeler",
+      "pillar": "basvuru_sureci",
+      "format": "carousel",
+      "headline": "Kurumsal Başvuruda Hangi Belgeler Gereklidir?",
+      "fingerprint": "basvuru-kurumsal-belgeler::kurumsal başvuruda hangi belgeler gereklidir",
+      "photos": [],
+      "published_at": "2026-10-15T18:06:18+00:00"
     }
   ]
 }
