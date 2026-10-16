@@ -67,13 +67,62 @@ def normalize_visual(visual: str | None) -> str:
     return value if value in VISUAL_STYLES else DEFAULT_VISUAL
 
 
-def build_image_prompt(scene: str, visual: str | None = None) -> str:
+def frame_instruction(size: tuple[int, int]) -> str:
+    ratio = size[1] / size[0] if size[0] else 1
+    if ratio > 1.5:
+        return (
+            "compose only for a vertical 9:16 Instagram story, subject filling the tall frame, "
+            "not a square and not a 4:5 feed crop"
+        )
+    return (
+        "compose only for a vertical 4:5 Instagram feed post, subject filling the 4:5 frame, "
+        "not a square and not a 9:16 story crop"
+    )
+
+
+def build_image_prompt(scene: str, visual: str | None = None, size: tuple[int, int] | None = None) -> str:
     style = normalize_visual(visual)
     scene = scene.strip() or DEFAULT_SCENES[style]
     parts = [scene, VISUAL_STYLES[style], IMAGE_PROMPT_BANS]
     if style == "people" or any(word in scene.lower() for word in PEOPLE_WORDS):
         parts.append(PEOPLE_RULE)
+    if size is not None:
+        parts.append(frame_instruction(size))
     return ", ".join(parts)
+
+
+def aspect_matches(image: Image.Image, size: tuple[int, int], tolerance: float = 0.08) -> bool:
+    """True when the bitmap is already this format's frame. A story frame is not a post frame."""
+    width, height = image.size
+    if width <= 0 or height <= 0 or size[0] <= 0 or size[1] <= 0:
+        return False
+    actual = height / width
+    target = size[1] / size[0]
+    return abs(actual - target) / target <= tolerance
+
+
+def accept_frame(image: Image.Image | None, size: tuple[int, int], source: str) -> Image.Image | None:
+    if image is None:
+        return None
+    if aspect_matches(image, size):
+        return image
+    print(
+        f"Warning: {source} returned {image.size[0]}x{image.size[1]}, "
+        f"not the {size[0]}x{size[1]} frame — refusing to crop it into this format."
+    )
+    return None
+
+
+def generation_size(size: tuple[int, int], longest: int = 1920) -> tuple[int, int]:
+    """Same aspect as the publish size, snapped to multiples of 16, within 256–1920."""
+    width, height = size
+    scale = min(1.0, longest / max(width, height))
+
+    def snap(value: float) -> int:
+        snapped = int(round(value * scale / 16.0) * 16)
+        return min(max(snapped, 256), longest)
+
+    return snap(width), snap(height)
 
 
 def _photo_library() -> list[tuple[Path, set[str]]]:
@@ -155,8 +204,11 @@ def _available_image_model() -> str | None:
     return discovered
 
 
-def _aspect_ratio(size: tuple[int, int]) -> str:
-    return "9:16" if size[1] / size[0] > 1.5 else "3:4"
+def _aspect_candidates(size: tuple[int, int]) -> list[str]:
+    """Native ratios for this canvas. 4:5 first for posts; 3:4 is close enough to crop slightly."""
+    if size[1] / size[0] > 1.5:
+        return ["9:16"]
+    return ["4:5", "3:4"]
 
 
 _gemini_images_disabled = False
@@ -169,29 +221,20 @@ def generate_ai_image(scene: str, size: tuple[int, int], visual: str | None = No
     model = _available_image_model()
     if model is None:
         return None
-    prompt = build_image_prompt(scene, visual)
+    prompt = build_image_prompt(scene, visual, size)
     try:
         from google import genai
         from google.genai import types
 
         client = genai.Client(api_key=config.env("GEMINI_API_KEY"))
         if model.startswith("imagen"):
-            result = client.models.generate_images(
-                model=model,
-                prompt=prompt,
-                config=types.GenerateImagesConfig(
-                    number_of_images=1,
-                    aspect_ratio=_aspect_ratio(size),
-                    person_generation="ALLOW_ADULT",
-                ),
-            )
-            data = result.generated_images[0].image.image_bytes
+            data = _generate_with_imagen(client, types, model, prompt, size)
         else:
             data = _generate_with_gemini_image(client, types, model, prompt, size)
         if not data:
             print("Warning: Gemini image model returned no image.")
             return None
-        return Image.open(io.BytesIO(data)).convert("RGB")
+        return accept_frame(Image.open(io.BytesIO(data)).convert("RGB"), size, "Gemini")
     except Exception as exc:
         message = str(exc).lower()
         if "429" in message or "resource_exhausted" in message or "quota" in message:
@@ -208,34 +251,62 @@ CLOUDFLARE_ATTEMPTS = 3
 CLOUDFLARE_RETRY_SECONDS = 6
 
 
-def generate_cloudflare_image(scene: str, visual: str | None = None) -> Image.Image | None:
-    """Cloudflare Workers AI (FLUX); free daily allowance. Returns a square image or None."""
+def generate_cloudflare_image(
+    scene: str, size: tuple[int, int], visual: str | None = None
+) -> Image.Image | None:
+    """Cloudflare Workers AI. The bitmap must already match the story or post frame."""
     account = config.env("CLOUDFLARE_ACCOUNT_ID")
     token = config.env("CLOUDFLARE_API_TOKEN")
     if not account or not token:
         return None
     model = config.env("CLOUDFLARE_IMAGE_MODEL", CLOUDFLARE_DEFAULT_MODEL)
-    prompt = build_image_prompt(scene, visual)[:CLOUDFLARE_PROMPT_LIMIT]
+    prompt = build_image_prompt(scene, visual, size)[:CLOUDFLARE_PROMPT_LIMIT]
+    width, height = generation_size(size)
     for attempt in range(1, CLOUDFLARE_ATTEMPTS + 1):
-        image, error = _cloudflare_request(account, token, model, prompt)
+        image, error = _cloudflare_request(account, token, model, prompt, width, height)
+        accepted = accept_frame(image, size, "Cloudflare")
+        if accepted is not None:
+            return accepted
         if image is not None:
-            return image
+            error = "wrong aspect ratio"
         print(f"Warning: Cloudflare image attempt {attempt}/{CLOUDFLARE_ATTEMPTS} failed — {error}")
         if attempt < CLOUDFLARE_ATTEMPTS:
             time.sleep(CLOUDFLARE_RETRY_SECONDS * attempt)
     return None
 
 
-def _cloudflare_request(account: str, token: str, model: str, prompt: str) -> tuple[Image.Image | None, str]:
+def _cloudflare_request(
+    account: str, token: str, model: str, prompt: str, width: int, height: int
+) -> tuple[Image.Image | None, str]:
+    url = f"https://api.cloudflare.com/client/v4/accounts/{account}/ai/run/{model}"
     try:
-        response = requests.post(
-            f"https://api.cloudflare.com/client/v4/accounts/{account}/ai/run/{model}",
-            headers={"Authorization": f"Bearer {token}"},
-            json={"prompt": prompt, "steps": 8},
-            timeout=120,
-        )
+        if "flux-2" in model:
+            # FLUX.2 requires multipart and honors width/height (256–1920).
+            response = requests.post(
+                url,
+                headers={"Authorization": f"Bearer {token}"},
+                files={
+                    "prompt": (None, prompt),
+                    "width": (None, str(width)),
+                    "height": (None, str(height)),
+                },
+                timeout=120,
+            )
+        else:
+            response = requests.post(
+                url,
+                headers={"Authorization": f"Bearer {token}"},
+                json={"prompt": prompt, "steps": 8, "width": width, "height": height},
+                timeout=120,
+            )
     except requests.RequestException as exc:
         return None, type(exc).__name__
+    content_type = response.headers.get("content-type", "")
+    if response.ok and content_type.startswith("image/"):
+        try:
+            return Image.open(io.BytesIO(response.content)).convert("RGB"), ""
+        except OSError as exc:
+            return None, type(exc).__name__
     try:
         payload = response.json()
     except ValueError:
@@ -252,22 +323,52 @@ def _cloudflare_request(account: str, token: str, model: str, prompt: str) -> tu
         return None, type(exc).__name__
 
 
+def _generate_with_imagen(client, types, model: str, prompt: str, size: tuple[int, int]) -> bytes | None:
+    last_error: Exception | None = None
+    for ratio in _aspect_candidates(size):
+        try:
+            result = client.models.generate_images(
+                model=model,
+                prompt=prompt,
+                config=types.GenerateImagesConfig(
+                    number_of_images=1,
+                    aspect_ratio=ratio,
+                    person_generation="ALLOW_ADULT",
+                ),
+            )
+            return result.generated_images[0].image.image_bytes
+        except Exception as exc:
+            last_error = exc
+            if "aspect" not in str(exc).lower():
+                raise
+            print(f"Note: image model rejected aspect {ratio} — trying the next ratio for this format.")
+    if last_error is not None:
+        raise last_error
+    return None
+
+
 def _generate_with_gemini_image(client, types, model: str, prompt: str, size: tuple[int, int]) -> bytes | None:
-    try:
-        config_with_ratio = types.GenerateContentConfig(
-            response_modalities=["IMAGE"],
-            image_config=types.ImageConfig(aspect_ratio=_aspect_ratio(size)),
-        )
-        response = client.models.generate_content(model=model, contents=prompt, config=config_with_ratio)
-    except Exception as exc:
-        if "aspect" not in str(exc).lower() and "image_config" not in str(exc).lower():
-            raise
-        response = client.models.generate_content(
-            model=model,
-            contents=prompt,
-            config=types.GenerateContentConfig(response_modalities=["IMAGE"]),
-        )
-    return _first_inline_image(response)
+    """Ask for this format's aspect only. A default square is not cropped into a story or a post."""
+    last_error: Exception | None = None
+    for ratio in _aspect_candidates(size):
+        try:
+            response = client.models.generate_content(
+                model=model,
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    response_modalities=["IMAGE"],
+                    image_config=types.ImageConfig(aspect_ratio=ratio),
+                ),
+            )
+            return _first_inline_image(response)
+        except Exception as exc:
+            last_error = exc
+            if "aspect" not in str(exc).lower() and "image_config" not in str(exc).lower():
+                raise
+            print(f"Note: image model rejected aspect {ratio} — trying the next ratio for this format.")
+    if last_error is not None:
+        raise last_error
+    return None
 
 
 def _first_inline_image(response: Any) -> bytes | None:
@@ -368,15 +469,21 @@ def get_slide_image(
     photo = None if style == "digital" else select_photo(photo_tags, usage, exclude)
     if photo is not None:
         try:
-            return SlideImage(Image.open(photo).convert("RGB"), "photo", _rel(photo))
+            opened = Image.open(photo).convert("RGB")
         except OSError:
             print(f"Warning: could not open {photo.name} — trying the next source.")
+        else:
+            other = config.POST_SIZE if size == config.STORY_SIZE else config.STORY_SIZE
+            if aspect_matches(opened, other) and not aspect_matches(opened, size):
+                print(f"Warning: {photo.name} belongs to the other format — not cropping it into this one.")
+            else:
+                return SlideImage(opened, "photo", _rel(photo))
 
     generated = generate_ai_image(scene, size, style)
     if generated is not None:
         return SlideImage(generated, "gemini")
 
-    generated = generate_cloudflare_image(scene, style)
+    generated = generate_cloudflare_image(scene, size, style)
     if generated is not None:
         return SlideImage(generated, "cloudflare")
 

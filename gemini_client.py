@@ -14,6 +14,7 @@ from content_history import (
     check_plan,
     format_history_for_prompt,
     load_history,
+    other_kind,
 )
 from text_case import sentence_case, title_case
 
@@ -128,13 +129,13 @@ Rules:
 3. NEVER invent prices, fees, durations, discounts, campaigns, percentages, legal claims or guarantees. Use numbers ONLY if they appear in the business facts. Never write "TL", "%", "ücretsiz", "indirim", "kampanya" or "fiyat".
 4. Do not speak on behalf of TÜRKKEP; no official announcements.
 5. Only mention the services listed in the facts.
-6. visual + image_prompt (English): pick the visual type that best fits each slide and vary it — do not show people on every slide or every day.
+6. visual + image_prompt (English): pick the visual type that best fits each slide and vary it — do not show people on every slide or every day. The scene must be composed only for this format's frame ({frame}). Never describe a scene meant for the other format, and never reuse a scene from recently published stories or posts.
    - "people": eye-catching, emotional real-world photo, e.g. a Turkish accountant smiling at her desk, a lawyer relaxed after finishing work on a laptop, a young entrepreneur on the phone in a bright café-office, a small business owner shaking hands. Describe the person, action, emotion, setting, light and camera angle; laptop and phone screens face away from the camera.
    - "digital": polished 3D/digital concept art about the slide's topic, e.g. a glowing digital envelope sealed with a shield (KEP), a pen drawing a light trail on a tablet (e-imza), a secure USB token on a desk with blue light, a padlock over a network of connected documents, a cloud with a shield, a smartphone with a fingerprint glow, abstract data lines flowing over an Istanbul skyline at night. Describe the object, materials, light and mood.
    - "place": our neighbourhood on Istanbul's Asian side, e.g. Üsküdar waterfront with Maiden's Tower, Bosphorus at sunset, a leafy Acıbadem street with modern buildings, a bright office window overlooking Üsküdar. Use it mainly for location/trust topics.
    Good mix: a carousel uses at least two different visual types; the CTA slide is "people" (a friendly consultant on the phone or welcoming a client) or "place". No text, letters, logos, documents with content or ID cards in any scene. Each slide uses a different scene.
 7. hashtags: 3-8 lowercase Turkish service hashtags.
-8. Do NOT reuse any topic_id or headline from "Recently published" and do not use pillars on cooldown.
+8. Story and feed post are separate products. Do NOT reuse any topic_id, headline, or message from recently published stories OR posts. Pillar cooldown applies only to this format.
 {carousel_rules}
 """
 
@@ -144,9 +145,15 @@ CAROUSEL_RULES = (
 )
 
 
+def _frame_label(kind: Kind) -> str:
+    if kind == "story":
+        return "vertical 9:16 story, 1080x1920, subject filling the tall frame"
+    return "vertical 4:5 feed post, 1080x1350, subject filling the 4:5 frame"
+
+
 def _format_rule(kind: Kind, requested: PostFormat | None) -> tuple[str, str, str]:
     if kind == "story":
-        return "a single 9:16 story (exactly 1 slide).", "story", ""
+        return "a single 9:16 story (exactly 1 slide). Do not write a feed-post caption or a 4:5 scene.", "story", ""
     if requested == "single":
         return "a single 4:5 image post (exactly 1 slide).", "single", ""
     carousel = CAROUSEL_RULES.format(min=CAROUSEL_MIN, max=CAROUSEL_MAX, cta=CTA_HEADLINE)
@@ -166,6 +173,7 @@ def build_prompt(
     *,
     requested_format: PostFormat | None = None,
     rejection_note: str = "",
+    other_history: list[dict[str, Any]] | None = None,
 ) -> str:
     topics = "\n".join(
         f"- {t['topic_id']} | {t['pillar']} | {t['format']} | {t['description']}" for t in load_topics()
@@ -175,8 +183,9 @@ def build_prompt(
         brand=config.brand_name(),
         facts=json.dumps(load_facts(), ensure_ascii=False, indent=1),
         topics=topics,
-        history=format_history_for_prompt(history),
-        kind_label="Instagram story" if kind == "story" else "Instagram feed post",
+        history=format_history_for_prompt(history, other_history, kind=kind),
+        frame=_frame_label(kind),
+        kind_label="Instagram story (9:16 only)" if kind == "story" else "Instagram feed post (4:5 only)",
         format_rule=format_rule,
         format_value=format_value,
         max_words=config.HEADLINE_MAX_WORDS,
@@ -349,6 +358,7 @@ def select_plan(
     history: list[dict[str, Any]],
     *,
     retries: int | None = None,
+    other_history: list[dict[str, Any]] | None = None,
 ) -> ContentPlan:
     """
     Run produce(rejection_note) until a clean plan appears.
@@ -369,7 +379,7 @@ def select_plan(
             print(f"Plan rejected ({attempt}/{attempts}): {note}")
             continue
 
-        verdict = check_plan(plan, history, facts)
+        verdict = check_plan(plan, history, facts, other_history=other_history)
         if verdict.clean:
             return plan
         if verdict.only_pillar_violation and pillar_only is None:
@@ -396,6 +406,7 @@ def generate_plan(
     model: str | None = None,
     requested_format: PostFormat | None = None,
     history: list[dict[str, Any]] | None = None,
+    other_history: list[dict[str, Any]] | None = None,
 ) -> ContentPlan:
     key = config.env("GEMINI_API_KEY")
     if not key:
@@ -404,17 +415,20 @@ def generate_plan(
     from google import genai
 
     recent = history if history is not None else load_history(kind)
-    if recent:
-        print(f"Avoiding {len(recent)} recent {kind} entries from history")
+    other = other_history if other_history is not None else load_history(other_kind(kind))
+    if recent or other:
+        print(f"Avoiding {len(recent)} recent {kind} entries and {len(other)} {other_kind(kind)} entries")
 
     client = genai.Client(api_key=key)
     models = model_chain(model)
 
     def produce(note: str) -> ContentPlan:
-        prompt = build_prompt(kind, recent, requested_format=requested_format, rejection_note=note)
+        prompt = build_prompt(
+            kind, recent, requested_format=requested_format, rejection_note=note, other_history=other
+        )
         return normalize_plan(_generate_once(client, models, prompt), kind, requested_format)
 
-    return select_plan(kind, produce, recent)
+    return select_plan(kind, produce, recent, other_history=other)
 
 
 def offline_plan(
@@ -422,9 +436,11 @@ def offline_plan(
     *,
     requested_format: PostFormat | None = None,
     history: list[dict[str, Any]] | None = None,
+    other_history: list[dict[str, Any]] | None = None,
 ) -> ContentPlan:
     """Rule-based plan from topics.json for local dry runs without GEMINI_API_KEY."""
     recent = history if history is not None else load_history(kind)
+    other = other_history if other_history is not None else load_history(other_kind(kind))
     facts = facts_text()
     topics = list(load_topics())
     if kind == "story":
@@ -440,10 +456,18 @@ def offline_plan(
         else:
             fmt = "carousel" if topic["format"] == "carousel" else "single"
 
+        if kind == "story":
+            scene = (
+                "a Turkish business owner standing by a tall office window, full-body vertical 9:16 story composition"
+            )
+        else:
+            scene = (
+                "a Turkish business owner at a desk, framed tightly for a vertical 4:5 Instagram feed photo"
+            )
         cover = Slide(
             headline=title_case(_clip_words(topic["headline"], config.HEADLINE_MAX_WORDS)),
             subline="KEP ve e-imza için yetkili başvuru merkezi",
-            image_prompt="a Turkish business owner smiling while working on a laptop in a bright modern Istanbul office",
+            image_prompt=scene,
         )
         slides = [cover]
         if fmt == "carousel":
@@ -469,7 +493,7 @@ def offline_plan(
             ),
             hashtags=["#kep", "#eimza"],
         )
-        if check_plan(plan, recent, facts).clean:
+        if check_plan(plan, recent, facts, other_history=other).clean:
             return plan
 
     raise RuntimeError("No unused topic available for the offline plan.")

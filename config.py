@@ -63,3 +63,8 @@ def pillar_cooldown() -> int:
 
 def duplicate_retries() -> int:
     return max(1, env_int("DUPLICATE_CONTENT_RETRIES", 5))
+
+
+def cross_channel_lookback() -> int:
+    """How many of the other channel's posts count as 'the same content'."""
+    return max(0, env_int("CROSS_CHANNEL_LOOKBACK", 10))

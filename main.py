@@ -17,9 +17,9 @@ from PIL import Image, ImageOps
 
 import canvas
 import config
-from content_history import load_history, photo_usage_counts, record_published
+from content_history import load_history, other_kind, photo_usage_counts, photos_used_by, record_published
 from gemini_client import ContentPlan, generate_plan, offline_plan, plan_summary, topics_by_id
-from image_gen import SlideImage, get_slide_image
+from image_gen import SlideImage, aspect_matches, get_slide_image
 
 Kind = Literal["story", "post"]
 
@@ -100,7 +100,8 @@ def render_plan(plan: ContentPlan, kind: Kind, out_dir: Path) -> tuple[list[Path
     size = config.STORY_SIZE if kind == "story" else config.POST_SIZE
     topic = topics_by_id().get(plan.topic_id, {})
     tags = list(topic.get("photo_tags", []))
-    usage = photo_usage_counts()
+    usage = photo_usage_counts(kind)
+    blocked = photos_used_by(other_kind(kind))
     used: set[str] = set()
     paths: list[Path] = []
     last = len(plan.slides) - 1
@@ -122,19 +123,26 @@ def render_plan(plan: ContentPlan, kind: Kind, out_dir: Path) -> tuple[list[Path
             pillar=plan.pillar,
             size=size,
             usage=usage,
-            exclude=used,
+            exclude=used | blocked,
             visual=slide.visual,
         )
         if source.photo:
             used.add(source.photo)
-        if source.source == "fallback" and last_real is not None:
+        if source.source == "fallback" and last_real is not None and aspect_matches(last_real, size):
             source = SlideImage(ImageOps.mirror(last_real), "reused")
-        elif source.source != "fallback":
+        elif source.source != "fallback" and aspect_matches(source.image, size):
             last_real = source.image
         print(f"Slide {index + 1}: {slide.visual} visual from {source.source}")
 
         name = "final_story.png" if kind == "story" else f"final_post_{index + 1}.png"
-        paths.append(canvas.save_image(canvas.render_slide(source.image, size, text), out_dir / name))
+        saved = canvas.save_image(canvas.render_slide(source.image, size, text), out_dir / name)
+        with Image.open(saved) as rendered:
+            if rendered.size != size:
+                raise RuntimeError(
+                    f"{saved.name} is {rendered.size[0]}x{rendered.size[1]}, "
+                    f"expected {size[0]}x{size[1]} for a {kind}"
+                )
+        paths.append(saved)
     return paths, sorted(used)
 
 

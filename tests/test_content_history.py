@@ -55,6 +55,27 @@ def test_consecutive_same_pillar_is_rejected():
     assert verdict.only_pillar_violation
 
 
+def test_story_topic_cannot_be_reused_as_a_post():
+    story = entry(make_plan(topic_id="eimza-islak-imza", headline="E-imza ıslak imza ile aynı hukuki geçerliliktedir"))
+    post = make_plan(topic_id="eimza-islak-imza", headline="E-imzanız ıslak imza ile aynı hukuki geçerliliktedir")
+    verdict = ch.check_plan(post, [], FACTS, cooldown=0, other_history=[story])
+    assert verdict.exact_repeat
+    assert not verdict.clean
+
+
+def test_near_duplicate_headline_across_formats_is_rejected():
+    story = entry(make_plan(topic_id="kep-maliyet", headline="KEP ile operasyonel maliyetlerinizi azaltın"))
+    post = make_plan(topic_id="kep-tasarruf", headline="KEP ile operasyonel maliyetlerinizi düşürün")
+    assert ch.headlines_too_similar(story["headline"], post.slides[0].headline)
+    assert ch.check_plan(post, [], FACTS, cooldown=0, other_history=[story]).exact_repeat
+
+
+def test_same_pillar_on_the_other_format_is_allowed():
+    story = entry(make_plan(topic_id="kep-nedir", headline="KEP nedir?"))
+    post = make_plan(topic_id="kep-delil", headline="Mahkemede kesin delil")
+    assert ch.check_plan(post, [], FACTS, cooldown=2, other_history=[story]).clean
+
+
 def test_pillar_outside_cooldown_window_is_allowed():
     history = [
         entry(make_plan()),
@@ -201,6 +222,31 @@ def test_normalize_plan_forces_story_and_carousel_rules():
         normalize_plan({**data, "slides": [{"headline": "Tek"}]}, "post", "carousel")
     with pytest.raises(ValueError):
         normalize_plan({**data, "topic_id": "uydurma-konu"}, "post")
+
+
+def test_generated_frame_cannot_be_reused_for_the_other_format():
+    from PIL import Image
+
+    from image_gen import aspect_matches, generation_size
+
+    square = Image.new("RGB", (1024, 1024))
+    story = Image.new("RGB", generation_size((1080, 1920)))
+    post = Image.new("RGB", generation_size((1080, 1350)))
+    assert not aspect_matches(square, (1080, 1920))
+    assert not aspect_matches(square, (1080, 1350))
+    assert aspect_matches(story, (1080, 1920))
+    assert not aspect_matches(story, (1080, 1350))
+    assert aspect_matches(post, (1080, 1350))
+    assert not aspect_matches(post, (1080, 1920))
+
+
+def test_image_prompt_names_the_target_frame():
+    from image_gen import build_image_prompt
+
+    story = build_image_prompt("a lawyer at a window", "people", (1080, 1920))
+    post = build_image_prompt("a lawyer at a desk", "people", (1080, 1350))
+    assert "vertical 9:16" in story and "vertical 4:5" not in story
+    assert "vertical 4:5" in post and "vertical 9:16" not in post
 
 
 def test_visual_types_choose_matching_style():

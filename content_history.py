@@ -37,9 +37,14 @@ def normalize_text(text: str) -> str:
     return re.sub(r"\s+", " ", cleaned).strip()
 
 
-def plan_headline(plan: Any) -> str:
+def plan_headlines(plan: Any) -> list[str]:
     slides = getattr(plan, "slides", None) or []
-    return slides[0].headline if slides else ""
+    return [slide.headline for slide in slides if getattr(slide, "headline", "")]
+
+
+def plan_headline(plan: Any) -> str:
+    headlines = plan_headlines(plan)
+    return headlines[0] if headlines else ""
 
 
 def fingerprint(topic_id: str, headline: str) -> str:
@@ -48,6 +53,10 @@ def fingerprint(topic_id: str, headline: str) -> str:
 
 def plan_fingerprint(plan: Any) -> str:
     return fingerprint(plan.topic_id, plan_headline(plan))
+
+
+def other_kind(kind: Kind) -> Kind:
+    return "post" if kind == "story" else "story"
 
 
 def _history_path(kind: Kind) -> Path:
@@ -77,11 +86,13 @@ def save_history(kind: Kind, entries: list[dict[str, Any]], path: Path | None = 
 
 
 def build_entry(plan: Any, photos: Iterable[str] = ()) -> dict[str, Any]:
+    headlines = plan_headlines(plan)
     return {
         "topic_id": plan.topic_id,
         "pillar": plan.pillar,
         "format": plan.format,
-        "headline": plan_headline(plan),
+        "headline": headlines[0] if headlines else "",
+        "headlines": headlines,
         "fingerprint": plan_fingerprint(plan),
         "photos": list(photos),
         "published_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
@@ -95,13 +106,22 @@ def record_published(kind: Kind, plan: Any, photos: Iterable[str] = (), path: Pa
     print(f"Recorded {kind} history: {plan.topic_id}")
 
 
-def photo_usage_counts() -> dict[str, int]:
+def photo_usage_counts(kind: Kind | None = None) -> dict[str, int]:
+    """How often each library photo was used. Pass a kind to count only that format."""
     counts: dict[str, int] = {}
-    for kind in HISTORY_FILES:
-        for entry in load_history(kind):  # type: ignore[arg-type]
+    kinds: tuple[str, ...] = (kind,) if kind else tuple(HISTORY_FILES)
+    for item in kinds:
+        for entry in load_history(item):  # type: ignore[arg-type]
             for photo in entry.get("photos") or []:
                 counts[photo] = counts.get(photo, 0) + 1
     return counts
+
+
+def photos_used_by(kind: Kind) -> set[str]:
+    used: set[str] = set()
+    for entry in load_history(kind):
+        used.update(str(photo) for photo in entry.get("photos") or [])
+    return used
 
 
 def _number_claims(text: str) -> list[tuple[str, str]]:
@@ -154,15 +174,53 @@ class Verdict:
         return self.pillar_repeat and not self.exact_repeat and not self.fabricated
 
 
-def is_exact_repeat(plan: Any, history: list[dict[str, Any]]) -> bool:
-    headline = normalize_text(plan_headline(plan))
+_HEADLINE_STOPWORDS = {
+    "ile", "ve", "için", "bir", "bu", "şu", "o", "da", "de", "mi", "mı", "mu", "mü",
+    "veya", "ya", "ki", "daha", "çok", "en", "her", "gibi",
+}
+
+
+def headline_tokens(text: str) -> set[str]:
+    return {word for word in normalize_text(text).split() if len(word) > 2 and word not in _HEADLINE_STOPWORDS}
+
+
+def headlines_too_similar(left: str, right: str) -> bool:
+    """True when two headlines are the same message with small wording changes."""
+    left_tokens = headline_tokens(left)
+    right_tokens = headline_tokens(right)
+    if len(left_tokens) < 3 or len(right_tokens) < 3:
+        return False
+    overlap = len(left_tokens & right_tokens) / min(len(left_tokens), len(right_tokens))
+    return overlap >= 0.75
+
+
+def _stored_headlines(entry: dict[str, Any]) -> list[str]:
+    stored = [str(entry.get("headline", ""))]
+    stored.extend(str(item) for item in entry.get("headlines") or [])
+    return [item for item in stored if item.strip()]
+
+
+def _headlines_conflict(plan: Any, entry: dict[str, Any], *, similar: bool) -> bool:
+    for headline in plan_headlines(plan):
+        normalized = normalize_text(headline)
+        for stored in _stored_headlines(entry):
+            if normalized and normalize_text(stored) == normalized:
+                return True
+            if similar and headlines_too_similar(headline, stored):
+                return True
+    return False
+
+
+def is_exact_repeat(plan: Any, history: list[dict[str, Any]], other_history: list[dict[str, Any]] | None = None) -> bool:
+    """Same topic or headline inside this format, or the same message on the other format."""
     fp = plan_fingerprint(plan)
     for entry in history[-config.history_size():]:
-        if entry.get("topic_id") == plan.topic_id:
+        if entry.get("topic_id") == plan.topic_id or entry.get("fingerprint") == fp:
             return True
-        if entry.get("fingerprint") == fp:
+        if _headlines_conflict(plan, entry, similar=False):
             return True
-        if headline and normalize_text(str(entry.get("headline", ""))) == headline:
+    for entry in (other_history or [])[-config.cross_channel_lookback():]:
+        if entry.get("topic_id") == plan.topic_id or _headlines_conflict(plan, entry, similar=True):
             return True
     return False
 
@@ -180,11 +238,14 @@ def check_plan(
     facts_text: str,
     *,
     cooldown: int | None = None,
+    other_history: list[dict[str, Any]] | None = None,
 ) -> Verdict:
     verdict = Verdict()
-    if is_exact_repeat(plan, history):
+    if is_exact_repeat(plan, history, other_history):
         verdict.exact_repeat = True
-        verdict.reasons.append(f"topic '{plan.topic_id}' or its headline was used recently")
+        verdict.reasons.append(
+            f"topic '{plan.topic_id}' or its headline was already used as a story or a post"
+        )
     if is_pillar_repeat(plan, history, cooldown):
         verdict.pillar_repeat = True
         verdict.reasons.append(f"pillar '{plan.pillar}' is on cooldown")
@@ -194,14 +255,36 @@ def check_plan(
     return verdict
 
 
-def format_history_for_prompt(history: list[dict[str, Any]]) -> str:
-    if not history:
-        return "\n## Recently published\n(none yet)\n"
-    lines = ["", "## Recently published — DO NOT REUSE these topic_ids or headlines"]
-    for entry in history[-config.history_size():]:
-        lines.append(f"- {entry.get('topic_id')} | {entry.get('pillar')} | {entry.get('headline')}")
+def _history_lines(entries: list[dict[str, Any]]) -> list[str]:
+    if not entries:
+        return ["(none yet)"]
+    return [
+        f"- {entry.get('topic_id')} | {entry.get('pillar')} | {entry.get('headline')}"
+        for entry in entries[-config.history_size():]
+    ]
+
+
+def format_history_for_prompt(
+    history: list[dict[str, Any]],
+    other_history: list[dict[str, Any]] | None = None,
+    *,
+    kind: str = "post",
+) -> str:
+    own_label = "stories" if kind == "story" else "feed posts"
+    own_singular = "story" if kind == "story" else "feed post"
+    other_label = "feed posts" if kind == "story" else "stories"
+    lines = [
+        "",
+        f"## Recently published {own_label} — DO NOT REUSE these topic_ids or headlines",
+        *_history_lines(history),
+    ]
     window = config.pillar_cooldown()
-    if window > 0:
-        blocked = [str(e.get("pillar")) for e in history[-window:]]
-        lines.append(f"Pillars on cooldown (do not use): {', '.join(dict.fromkeys(blocked))}")
+    if window > 0 and history:
+        blocked = [str(entry.get("pillar")) for entry in history[-window:]]
+        lines.append(f"Pillars on cooldown for this format only (do not use): {', '.join(dict.fromkeys(blocked))}")
+    lines.append("")
+    lines.append(
+        f"## Recently published {other_label} — a new {own_singular} must NOT repeat these topics, headlines, or messages"
+    )
+    lines.extend(_history_lines((other_history or [])[-config.cross_channel_lookback():]))
     return "\n".join(lines) + "\n"

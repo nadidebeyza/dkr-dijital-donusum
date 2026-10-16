@@ -96,7 +96,13 @@ jobs:
 
   run-post:
     # Must match the schedule cron string character for character.
-    if: github.event.schedule == '0 14 * * *' || github.event_name == 'workflow_dispatch'
+    # Waits for the story job so a manual run cannot publish the same topic twice.
+    # On the afternoon schedule the story job is skipped and this job still runs.
+    needs: run-story
+    if: >-
+      always() &&
+      (github.event.schedule == '0 14 * * *' || github.event_name == 'workflow_dispatch') &&
+      (needs.run-story.result == 'success' || needs.run-story.result == 'skipped')
     runs-on: ubuntu-latest
     timeout-minutes: 20
     concurrency:
