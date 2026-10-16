@@ -98,6 +98,20 @@
       "fingerprint": "basvuru-kurumsal-belgeler::kurumsal başvuruda hangi belgeler gereklidir",
       "photos": [],
       "published_at": "2026-10-15T18:06:18+00:00"
+    },
+    {
+      "topic_id": "kurumsal-muhasebeciler",
+      "pillar": "kurumsal",
+      "format": "carousel",
+      "headline": "Muhasebe Ofisleri İçin Toplu Çözümler",
+      "headlines": [
+        "Muhasebe Ofisleri İçin Toplu Çözümler",
+        "Kurumsal Süreçlerde Hızlı İşlemler",
+        "Başvuru İçin Bize Ulaşın"
+      ],
+      "fingerprint": "kurumsal-muhasebeciler::muhasebe ofisleri için toplu çözümler",
+      "photos": [],
+      "published_at": "2026-10-16T17:52:08+00:00"
     }
   ]
 }
