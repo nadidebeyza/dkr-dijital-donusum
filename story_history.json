@@ -98,6 +98,18 @@
       "fingerprint": "basvuru-uzaktan::uzaktan kimlik doğrulama ile kolay başvuru",
       "photos": [],
       "published_at": "2026-10-15T12:30:41+00:00"
+    },
+    {
+      "topic_id": "kurumsal-teknik-danismanlik",
+      "pillar": "kurumsal",
+      "format": "story",
+      "headline": "Kurumsal Süreçleriniz İçin Teknik Danışmanlık Desteği",
+      "headlines": [
+        "Kurumsal Süreçleriniz İçin Teknik Danışmanlık Desteği"
+      ],
+      "fingerprint": "kurumsal-teknik-danismanlik::kurumsal süreçleriniz için teknik danışmanlık desteği",
+      "photos": [],
+      "published_at": "2026-10-16T12:07:49+00:00"
     }
   ]
 }
