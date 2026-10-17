@@ -110,6 +110,18 @@
       "fingerprint": "kurumsal-teknik-danismanlik::kurumsal süreçleriniz için teknik danışmanlık desteği",
       "photos": [],
       "published_at": "2026-10-16T12:07:49+00:00"
+    },
+    {
+      "topic_id": "sss-kadikoy-uskudar",
+      "pillar": "sss",
+      "format": "story",
+      "headline": "Üsküdar ve Kadıköy'den Kolay Başvuru",
+      "headlines": [
+        "Üsküdar ve Kadıköy'den Kolay Başvuru"
+      ],
+      "fingerprint": "sss-kadikoy-uskudar::üsküdar ve kadıköy den kolay başvuru",
+      "photos": [],
+      "published_at": "2026-10-17T11:26:29+00:00"
     }
   ]
 }
