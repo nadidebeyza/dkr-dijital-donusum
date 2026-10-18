@@ -122,6 +122,18 @@
       "fingerprint": "sss-kadikoy-uskudar::üsküdar ve kadıköy den kolay başvuru",
       "photos": [],
       "published_at": "2026-10-17T11:26:29+00:00"
+    },
+    {
+      "topic_id": "kep-cevre-dostu",
+      "pillar": "kep_bilgi",
+      "format": "story",
+      "headline": "KEP ile Çevre Dostu Dijital Ofisler",
+      "headlines": [
+        "KEP ile Çevre Dostu Dijital Ofisler"
+      ],
+      "fingerprint": "kep-cevre-dostu::kep ile çevre dostu dijital ofisler",
+      "photos": [],
+      "published_at": "2026-10-18T11:58:36+00:00"
     }
   ]
 }
