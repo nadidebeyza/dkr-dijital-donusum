@@ -112,6 +112,18 @@
       "fingerprint": "kurumsal-muhasebeciler::muhasebe ofisleri için toplu çözümler",
       "photos": [],
       "published_at": "2026-10-16T17:52:08+00:00"
+    },
+    {
+      "topic_id": "kep-kesin-delil",
+      "pillar": "kep_bilgi",
+      "format": "single",
+      "headline": "KEP Yazışmaları Mahkemelerde Kesin Delil Statüsündedir",
+      "headlines": [
+        "KEP Yazışmaları Mahkemelerde Kesin Delil Statüsündedir"
+      ],
+      "fingerprint": "kep-kesin-delil::kep yazışmaları mahkemelerde kesin delil statüsündedir",
+      "photos": [],
+      "published_at": "2026-10-19T19:42:29+00:00"
     }
   ]
 }
