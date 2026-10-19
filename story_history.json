@@ -134,6 +134,18 @@
       "fingerprint": "kep-cevre-dostu::kep ile çevre dostu dijital ofisler",
       "photos": [],
       "published_at": "2026-10-18T11:58:36+00:00"
+    },
+    {
+      "topic_id": "konum-anadolu-yakasi",
+      "pillar": "konum_guven",
+      "format": "story",
+      "headline": "Anadolu Yakası'ndan Kolay Ulaşım Noktası",
+      "headlines": [
+        "Anadolu Yakası'ndan Kolay Ulaşım Noktası"
+      ],
+      "fingerprint": "konum-anadolu-yakasi::anadolu yakası ndan kolay ulaşım noktası",
+      "photos": [],
+      "published_at": "2026-10-19T14:24:25+00:00"
     }
   ]
 }
