@@ -124,6 +124,18 @@
       "fingerprint": "kep-kesin-delil::kep yazışmaları mahkemelerde kesin delil statüsündedir",
       "photos": [],
       "published_at": "2026-10-19T19:42:29+00:00"
+    },
+    {
+      "topic_id": "eimza-edevlet",
+      "pillar": "eimza_bilgi",
+      "format": "single",
+      "headline": "E-Devlet Uyumluluğu ile Güvenli Dijital İşlemler",
+      "headlines": [
+        "E-Devlet Uyumluluğu ile Güvenli Dijital İşlemler"
+      ],
+      "fingerprint": "eimza-edevlet::e devlet uyumluluğu ile güvenli dijital işlemler",
+      "photos": [],
+      "published_at": "2026-10-20T18:29:22+00:00"
     }
   ]
 }
