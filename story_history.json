@@ -146,6 +146,18 @@
       "fingerprint": "konum-anadolu-yakasi::anadolu yakası ndan kolay ulaşım noktası",
       "photos": [],
       "published_at": "2026-10-19T14:24:25+00:00"
+    },
+    {
+      "topic_id": "cta-bugun-basvur",
+      "pillar": "cta_kampanya",
+      "format": "story",
+      "headline": "Bugün Başvurunuzu Başlatın",
+      "headlines": [
+        "Bugün Başvurunuzu Başlatın"
+      ],
+      "fingerprint": "cta-bugun-basvur::bugün başvurunuzu başlatın",
+      "photos": [],
+      "published_at": "2026-10-20T12:34:22+00:00"
     }
   ]
 }
