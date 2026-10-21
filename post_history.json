@@ -136,6 +136,18 @@
       "fingerprint": "eimza-edevlet::e devlet uyumluluğu ile güvenli dijital işlemler",
       "photos": [],
       "published_at": "2026-10-20T18:29:22+00:00"
+    },
+    {
+      "topic_id": "kurumsal-evrak-danismanligi",
+      "pillar": "kurumsal",
+      "format": "single",
+      "headline": "Şirket Evrak Danışmanlığı Hizmeti",
+      "headlines": [
+        "Şirket Evrak Danışmanlığı Hizmeti"
+      ],
+      "fingerprint": "kurumsal-evrak-danismanligi::şirket evrak danışmanlığı hizmeti",
+      "photos": [],
+      "published_at": "2026-10-21T18:26:42+00:00"
     }
   ]
 }
