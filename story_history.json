@@ -158,6 +158,18 @@
       "fingerprint": "cta-bugun-basvur::bugün başvurunuzu başlatın",
       "photos": [],
       "published_at": "2026-10-20T12:34:22+00:00"
+    },
+    {
+      "topic_id": "sss-dkr-nedir",
+      "pillar": "sss",
+      "format": "story",
+      "headline": "DKR TÜRKKEP Başvuru Merkezi Nedir?",
+      "headlines": [
+        "DKR TÜRKKEP Başvuru Merkezi Nedir?"
+      ],
+      "fingerprint": "sss-dkr-nedir::dkr türkkep başvuru merkezi nedir",
+      "photos": [],
+      "published_at": "2026-10-21T12:45:42+00:00"
     }
   ]
 }
