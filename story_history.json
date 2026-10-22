@@ -170,6 +170,18 @@
       "fingerprint": "sss-dkr-nedir::dkr türkkep başvuru merkezi nedir",
       "photos": [],
       "published_at": "2026-10-21T12:45:42+00:00"
+    },
+    {
+      "topic_id": "konum-randevu",
+      "pillar": "konum_guven",
+      "format": "story",
+      "headline": "Randevu Alarak Beklemeden Başvurunuzu Tamamlayın",
+      "headlines": [
+        "Randevu Alarak Beklemeden Başvurunuzu Tamamlayın"
+      ],
+      "fingerprint": "konum-randevu::randevu alarak beklemeden başvurunuzu tamamlayın",
+      "photos": [],
+      "published_at": "2026-10-22T12:49:21+00:00"
     }
   ]
 }
