@@ -182,6 +182,18 @@
       "fingerprint": "konum-randevu::randevu alarak beklemeden başvurunuzu tamamlayın",
       "photos": [],
       "published_at": "2026-10-22T12:49:21+00:00"
+    },
+    {
+      "topic_id": "kep-izlenebilirlik",
+      "pillar": "kep_bilgi",
+      "format": "story",
+      "headline": "Resmi İletilerinizde Tam İzlenebilirlik ve Denetim",
+      "headlines": [
+        "Resmi İletilerinizde Tam İzlenebilirlik ve Denetim"
+      ],
+      "fingerprint": "kep-izlenebilirlik::resmi iletilerinizde tam izlenebilirlik ve denetim",
+      "photos": [],
+      "published_at": "2026-10-23T12:31:33+00:00"
     }
   ]
 }
