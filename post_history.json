@@ -148,6 +148,18 @@
       "fingerprint": "kurumsal-evrak-danismanligi::şirket evrak danışmanlığı hizmeti",
       "photos": [],
       "published_at": "2026-10-21T18:26:42+00:00"
+    },
+    {
+      "topic_id": "basvuru-yuz-yuze",
+      "pillar": "basvuru_sureci",
+      "format": "single",
+      "headline": "Acıbadem'de Yüz Yüze Başvuru",
+      "headlines": [
+        "Acıbadem'de Yüz Yüze Başvuru"
+      ],
+      "fingerprint": "basvuru-yuz-yuze::acıbadem de yüz yüze başvuru",
+      "photos": [],
+      "published_at": "2026-10-26T19:51:21+00:00"
     }
   ]
 }
