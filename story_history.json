@@ -218,6 +218,18 @@
       "fingerprint": "sss-kep-zorunlu-mu::şirketiniz için kep kullanımı zorunlu mu",
       "photos": [],
       "published_at": "2026-10-25T12:22:47+00:00"
+    },
+    {
+      "topic_id": "cta-ekip-basvurusu",
+      "pillar": "cta_kampanya",
+      "format": "story",
+      "headline": "Ekibiniz İçin Toplu Başvuru Kolaylığı",
+      "headlines": [
+        "Ekibiniz İçin Toplu Başvuru Kolaylığı"
+      ],
+      "fingerprint": "cta-ekip-basvurusu::ekibiniz için toplu başvuru kolaylığı",
+      "photos": [],
+      "published_at": "2026-10-27T13:01:19+00:00"
     }
   ]
 }
