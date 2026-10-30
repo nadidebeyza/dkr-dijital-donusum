@@ -230,6 +230,18 @@
       "fingerprint": "cta-ekip-basvurusu::ekibiniz için toplu başvuru kolaylığı",
       "photos": [],
       "published_at": "2026-10-27T13:01:19+00:00"
+    },
+    {
+      "topic_id": "konum-yetkili-merkez",
+      "pillar": "konum_guven",
+      "format": "story",
+      "headline": "Acıbadem'de Yetkili TÜRKKEP Başvuru Merkezi",
+      "headlines": [
+        "Acıbadem'de Yetkili TÜRKKEP Başvuru Merkezi"
+      ],
+      "fingerprint": "konum-yetkili-merkez::acıbadem de yetkili türkkep başvuru merkezi",
+      "photos": [],
+      "published_at": "2026-10-30T13:53:07+00:00"
     }
   ]
 }
