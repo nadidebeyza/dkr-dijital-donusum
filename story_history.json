@@ -242,6 +242,18 @@
       "fingerprint": "konum-yetkili-merkez::acıbadem de yetkili türkkep başvuru merkezi",
       "photos": [],
       "published_at": "2026-10-30T13:53:07+00:00"
+    },
+    {
+      "topic_id": "kep-vs-eposta",
+      "pillar": "kep_bilgi",
+      "format": "story",
+      "headline": "KEP ile Standart E-Posta Arasındaki Fark",
+      "headlines": [
+        "KEP ile Standart E-Posta Arasındaki Fark"
+      ],
+      "fingerprint": "kep-vs-eposta::kep ile standart e posta arasındaki fark",
+      "photos": [],
+      "published_at": "2026-10-31T13:22:39+00:00"
     }
   ]
 }
