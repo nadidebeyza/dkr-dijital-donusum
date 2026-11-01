@@ -254,6 +254,18 @@
       "fingerprint": "kep-vs-eposta::kep ile standart e posta arasındaki fark",
       "photos": [],
       "published_at": "2026-10-31T13:22:39+00:00"
+    },
+    {
+      "topic_id": "sss-eimza-yerine-kep",
+      "pillar": "sss",
+      "format": "story",
+      "headline": "E-İmza Yerine KEP Kullanılır mı?",
+      "headlines": [
+        "E-İmza Yerine KEP Kullanılır mı?"
+      ],
+      "fingerprint": "sss-eimza-yerine-kep::e imza yerine kep kullanılır mı",
+      "photos": [],
+      "published_at": "2026-11-01T14:06:48+00:00"
     }
   ]
 }
