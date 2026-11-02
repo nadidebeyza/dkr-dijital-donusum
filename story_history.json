@@ -266,6 +266,18 @@
       "fingerprint": "sss-eimza-yerine-kep::e imza yerine kep kullanılır mı",
       "photos": [],
       "published_at": "2026-11-01T14:06:48+00:00"
+    },
+    {
+      "topic_id": "basvuru-evrak-kontrolu",
+      "pillar": "basvuru_sureci",
+      "format": "story",
+      "headline": "Başvurularda Uzman Ekip ile Evrak Kontrolü",
+      "headlines": [
+        "Başvurularda Uzman Ekip ile Evrak Kontrolü"
+      ],
+      "fingerprint": "basvuru-evrak-kontrolu::başvurularda uzman ekip ile evrak kontrolü",
+      "photos": [],
+      "published_at": "2026-11-02T17:00:01+00:00"
     }
   ]
 }
