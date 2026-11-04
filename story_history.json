@@ -278,6 +278,18 @@
       "fingerprint": "basvuru-evrak-kontrolu::başvurularda uzman ekip ile evrak kontrolü",
       "photos": [],
       "published_at": "2026-11-02T17:00:01+00:00"
+    },
+    {
+      "topic_id": "kurumsal-uzaktan-kurulum",
+      "pillar": "kurumsal",
+      "format": "story",
+      "headline": "Uzaktan Kurulum Desteği ile Hızlı Çözüm",
+      "headlines": [
+        "Uzaktan Kurulum Desteği ile Hızlı Çözüm"
+      ],
+      "fingerprint": "kurumsal-uzaktan-kurulum::uzaktan kurulum desteği ile hızlı çözüm",
+      "photos": [],
+      "published_at": "2026-11-04T15:11:00+00:00"
     }
   ]
 }
