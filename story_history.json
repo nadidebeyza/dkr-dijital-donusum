@@ -290,6 +290,18 @@
       "fingerprint": "kurumsal-uzaktan-kurulum::uzaktan kurulum desteği ile hızlı çözüm",
       "photos": [],
       "published_at": "2026-11-04T15:11:00+00:00"
+    },
+    {
+      "topic_id": "kep-maliyet-tasarrufu",
+      "pillar": "kep_bilgi",
+      "format": "story",
+      "headline": "KEP ile İşletme Giderlerinizi Azaltın",
+      "headlines": [
+        "KEP ile İşletme Giderlerinizi Azaltın"
+      ],
+      "fingerprint": "kep-maliyet-tasarrufu::kep ile işletme giderlerinizi azaltın",
+      "photos": [],
+      "published_at": "2026-11-05T15:14:48+00:00"
     }
   ]
 }
