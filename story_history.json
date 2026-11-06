@@ -302,6 +302,18 @@
       "fingerprint": "kep-maliyet-tasarrufu::kep ile işletme giderlerinizi azaltın",
       "photos": [],
       "published_at": "2026-11-05T15:14:48+00:00"
+    },
+    {
+      "topic_id": "sss-uzaktan-nasil",
+      "pillar": "sss",
+      "format": "story",
+      "headline": "Uzaktan Başvuru İşlemleri Nasıl Yürütülüyor?",
+      "headlines": [
+        "Uzaktan Başvuru İşlemleri Nasıl Yürütülüyor?"
+      ],
+      "fingerprint": "sss-uzaktan-nasil::uzaktan başvuru işlemleri nasıl yürütülüyor",
+      "photos": [],
+      "published_at": "2026-11-06T14:49:41+00:00"
     }
   ]
 }
