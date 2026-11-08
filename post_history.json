@@ -160,6 +160,18 @@
       "fingerprint": "basvuru-yuz-yuze::acıbadem de yüz yüze başvuru",
       "photos": [],
       "published_at": "2026-10-26T19:51:21+00:00"
+    },
+    {
+      "topic_id": "kep-izlenebilirlik",
+      "pillar": "kep_bilgi",
+      "format": "single",
+      "headline": "KEP ile İletilerinizde Tam İzlenebilirlik",
+      "headlines": [
+        "KEP ile İletilerinizde Tam İzlenebilirlik"
+      ],
+      "fingerprint": "kep-izlenebilirlik::kep ile iletilerinizde tam izlenebilirlik",
+      "photos": [],
+      "published_at": "2026-11-08T18:45:47+00:00"
     }
   ]
 }
