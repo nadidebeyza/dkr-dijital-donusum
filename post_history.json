@@ -172,6 +172,18 @@
       "fingerprint": "kep-izlenebilirlik::kep ile iletilerinizde tam izlenebilirlik",
       "photos": [],
       "published_at": "2026-11-08T18:45:47+00:00"
+    },
+    {
+      "topic_id": "eimza-guvenli-dogrulama",
+      "pillar": "eimza_bilgi",
+      "format": "single",
+      "headline": "E-İmza ile Güvenli Doğrulama Sistemi",
+      "headlines": [
+        "E-İmza ile Güvenli Doğrulama Sistemi"
+      ],
+      "fingerprint": "eimza-guvenli-dogrulama::e imza ile güvenli doğrulama sistemi",
+      "photos": [],
+      "published_at": "2026-11-09T23:21:27+00:00"
     }
   ]
 }
