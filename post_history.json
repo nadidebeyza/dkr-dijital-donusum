@@ -184,6 +184,18 @@
       "fingerprint": "eimza-guvenli-dogrulama::e imza ile güvenli doğrulama sistemi",
       "photos": [],
       "published_at": "2026-11-09T23:21:27+00:00"
+    },
+    {
+      "topic_id": "kurumsal-7-24-destek",
+      "pillar": "kurumsal",
+      "format": "single",
+      "headline": "Başvurudan Sonra Kesintisiz Teknik Destek",
+      "headlines": [
+        "Başvurudan Sonra Kesintisiz Teknik Destek"
+      ],
+      "fingerprint": "kurumsal-7-24-destek::başvurudan sonra kesintisiz teknik destek",
+      "photos": [],
+      "published_at": "2026-11-10T20:59:59+00:00"
     }
   ]
 }
