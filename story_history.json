@@ -1,15 +1,6 @@
 {
   "entries": [
     {
-      "topic_id": "eimza-islak-imza",
-      "pillar": "eimza_bilgi",
-      "format": "story",
-      "headline": "E-imza ıslak imza ile aynı hukuki geçerliliktedir",
-      "fingerprint": "eimza-islak-imza::e imza ıslak imza ile aynı hukuki geçerliliktedir",
-      "photos": [],
-      "published_at": "2026-10-08T22:37:56+00:00"
-    },
-    {
       "topic_id": "basvuru-yenileme-hatirlatma",
       "pillar": "basvuru_sureci",
       "format": "story",
@@ -332,6 +323,18 @@
       "fingerprint": "eimza-nedir::elektronik imza ile belgelerinizi kolayca imzalayın",
       "photos": [],
       "published_at": "2026-11-09T17:12:58+00:00"
+    },
+    {
+      "topic_id": "kurumsal-toplu-basvuru",
+      "pillar": "kurumsal",
+      "format": "story",
+      "headline": "Personel Toplu KEP ve E-İmza Başvurusu",
+      "headlines": [
+        "Personel Toplu KEP ve E-İmza Başvurusu"
+      ],
+      "fingerprint": "kurumsal-toplu-basvuru::personel toplu kep ve e imza başvurusu",
+      "photos": [],
+      "published_at": "2026-11-10T15:28:36+00:00"
     }
   ]
 }
