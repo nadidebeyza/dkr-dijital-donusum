@@ -1,15 +1,6 @@
 {
   "entries": [
     {
-      "topic_id": "basvuru-yenileme-hatirlatma",
-      "pillar": "basvuru_sureci",
-      "format": "story",
-      "headline": "E-imza süreniz dolmadan yenilemenizi tamamlayın",
-      "fingerprint": "basvuru-yenileme-hatirlatma::e imza süreniz dolmadan yenilemenizi tamamlayın",
-      "photos": [],
-      "published_at": "2026-10-08T22:52:01+00:00"
-    },
-    {
       "topic_id": "konum-acibademdeyiz",
       "pillar": "konum_guven",
       "format": "story",
@@ -335,6 +326,18 @@
       "fingerprint": "kurumsal-toplu-basvuru::personel toplu kep ve e imza başvurusu",
       "photos": [],
       "published_at": "2026-11-10T15:28:36+00:00"
+    },
+    {
+      "topic_id": "kep-zaman-kazanci",
+      "pillar": "kep_bilgi",
+      "format": "story",
+      "headline": "KEP ile İş Süreçlerinizi Hızlandırın",
+      "headlines": [
+        "KEP ile İş Süreçlerinizi Hızlandırın"
+      ],
+      "fingerprint": "kep-zaman-kazanci::kep ile iş süreçlerinizi hızlandırın",
+      "photos": [],
+      "published_at": "2026-11-11T15:00:43+00:00"
     }
   ]
 }
