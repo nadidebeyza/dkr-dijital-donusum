@@ -1,15 +1,6 @@
 {
   "entries": [
     {
-      "topic_id": "konum-acibademdeyiz",
-      "pillar": "konum_guven",
-      "format": "story",
-      "headline": "Acıbadem'de Kolay Ulaşım Noktası",
-      "fingerprint": "konum-acibademdeyiz::acıbadem de kolay ulaşım noktası",
-      "photos": [],
-      "published_at": "2026-10-08T22:57:38+00:00"
-    },
-    {
       "topic_id": "kep-mobil-yonetim",
       "pillar": "kep_bilgi",
       "format": "story",
@@ -338,6 +329,18 @@
       "fingerprint": "kep-zaman-kazanci::kep ile iş süreçlerinizi hızlandırın",
       "photos": [],
       "published_at": "2026-11-11T15:00:43+00:00"
+    },
+    {
+      "topic_id": "basvuru-yenileme-hatirlatma",
+      "pillar": "basvuru_sureci",
+      "format": "story",
+      "headline": "E-İmza Sertifika Yenileme Zamanınızı Kaçırmayın",
+      "headlines": [
+        "E-İmza Sertifika Yenileme Zamanınızı Kaçırmayın"
+      ],
+      "fingerprint": "basvuru-yenileme-hatirlatma::e imza sertifika yenileme zamanınızı kaçırmayın",
+      "photos": [],
+      "published_at": "2026-11-13T15:09:25+00:00"
     }
   ]
 }
