@@ -1,15 +1,6 @@
 {
   "entries": [
     {
-      "topic_id": "basvuru-aktivasyon",
-      "pillar": "basvuru_sureci",
-      "format": "story",
-      "headline": "KEP ve E-İmzanız Aktif Olarak Teslim Edilir",
-      "fingerprint": "basvuru-aktivasyon::kep ve e imzanız aktif olarak teslim edilir",
-      "photos": [],
-      "published_at": "2026-10-10T13:19:52+00:00"
-    },
-    {
       "topic_id": "eimza-evrak-maliyeti",
       "pillar": "eimza_bilgi",
       "format": "story",
@@ -344,6 +335,18 @@
       "fingerprint": "eimza-islak-imza::e imza ıslak imza ile aynı hukuki geçerlilikte",
       "photos": [],
       "published_at": "2026-11-15T14:34:56+00:00"
+    },
+    {
+      "topic_id": "sss-destek-yenileme",
+      "pillar": "sss",
+      "format": "story",
+      "headline": "Sertifika Yenileme ve Teknik Destek Süreçleri",
+      "headlines": [
+        "Sertifika Yenileme ve Teknik Destek Süreçleri"
+      ],
+      "fingerprint": "sss-destek-yenileme::sertifika yenileme ve teknik destek süreçleri",
+      "photos": [],
+      "published_at": "2026-11-16T16:50:08+00:00"
     }
   ]
 }
