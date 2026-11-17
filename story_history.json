@@ -1,15 +1,6 @@
 {
   "entries": [
     {
-      "topic_id": "eimza-evrak-maliyeti",
-      "pillar": "eimza_bilgi",
-      "format": "story",
-      "headline": "E-İmza ile Evrak Maliyetlerinizi Azaltın",
-      "fingerprint": "eimza-evrak-maliyeti::e imza ile evrak maliyetlerinizi azaltın",
-      "photos": [],
-      "published_at": "2026-10-12T16:33:23+00:00"
-    },
-    {
       "topic_id": "kurumsal-7-24-destek",
       "pillar": "kurumsal",
       "format": "story",
@@ -347,6 +338,18 @@
       "fingerprint": "sss-destek-yenileme::sertifika yenileme ve teknik destek süreçleri",
       "photos": [],
       "published_at": "2026-11-16T16:50:08+00:00"
+    },
+    {
+      "topic_id": "kep-mobil-yonetim",
+      "pillar": "kep_bilgi",
+      "format": "story",
+      "headline": "Resmi Yazışmalarınızı Mobilden Yönetin",
+      "headlines": [
+        "Resmi Yazışmalarınızı Mobilden Yönetin"
+      ],
+      "fingerprint": "kep-mobil-yonetim::resmi yazışmalarınızı mobilden yönetin",
+      "photos": [],
+      "published_at": "2026-11-17T16:45:47+00:00"
     }
   ]
 }
