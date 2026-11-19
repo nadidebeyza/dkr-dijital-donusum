@@ -1,15 +1,6 @@
 {
   "entries": [
     {
-      "topic_id": "kurumsal-7-24-destek",
-      "pillar": "kurumsal",
-      "format": "story",
-      "headline": "Başvurudan Sonra 7/24 Teknik Destek",
-      "fingerprint": "kurumsal-7-24-destek::başvurudan sonra 7 24 teknik destek",
-      "photos": [],
-      "published_at": "2026-10-13T14:50:21+00:00"
-    },
-    {
       "topic_id": "kep-delil-20-yil",
       "pillar": "kep_bilgi",
       "format": "story",
@@ -350,6 +341,18 @@
       "fingerprint": "kep-mobil-yonetim::resmi yazışmalarınızı mobilden yönetin",
       "photos": [],
       "published_at": "2026-11-17T16:45:47+00:00"
+    },
+    {
+      "topic_id": "eimza-zaman-tasarrufu",
+      "pillar": "eimza_bilgi",
+      "format": "story",
+      "headline": "E-İmza ile Zamandan ve Evrak Maliyetinden Tasarruf",
+      "headlines": [
+        "E-İmza ile Zamandan ve Evrak Maliyetinden Tasarruf"
+      ],
+      "fingerprint": "eimza-zaman-tasarrufu::e imza ile zamandan ve evrak maliyetinden tasarruf",
+      "photos": [],
+      "published_at": "2026-11-19T16:22:51+00:00"
     }
   ]
 }
