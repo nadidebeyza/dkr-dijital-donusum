@@ -1,15 +1,6 @@
 {
   "entries": [
     {
-      "topic_id": "kep-delil-20-yil",
-      "pillar": "kep_bilgi",
-      "format": "story",
-      "headline": "KEP İletileri ve Delil Logları Arşivlenir",
-      "fingerprint": "kep-delil-20-yil::kep iletileri ve delil logları arşivlenir",
-      "photos": [],
-      "published_at": "2026-10-14T12:41:29+00:00"
-    },
-    {
       "topic_id": "basvuru-uzaktan",
       "pillar": "basvuru_sureci",
       "format": "story",
@@ -353,6 +344,18 @@
       "fingerprint": "eimza-zaman-tasarrufu::e imza ile zamandan ve evrak maliyetinden tasarruf",
       "photos": [],
       "published_at": "2026-11-19T16:22:51+00:00"
+    },
+    {
+      "topic_id": "basvuru-aktivasyon",
+      "pillar": "basvuru_sureci",
+      "format": "story",
+      "headline": "KEP ve E-İmzanız Hızlıca Aktif Edilir",
+      "headlines": [
+        "KEP ve E-İmzanız Hızlıca Aktif Edilir"
+      ],
+      "fingerprint": "basvuru-aktivasyon::kep ve e imzanız hızlıca aktif edilir",
+      "photos": [],
+      "published_at": "2026-11-20T15:56:54+00:00"
     }
   ]
 }
