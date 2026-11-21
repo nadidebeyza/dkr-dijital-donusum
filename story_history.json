@@ -1,15 +1,6 @@
 {
   "entries": [
     {
-      "topic_id": "basvuru-uzaktan",
-      "pillar": "basvuru_sureci",
-      "format": "story",
-      "headline": "Uzaktan Kimlik Doğrulama ile Kolay Başvuru",
-      "fingerprint": "basvuru-uzaktan::uzaktan kimlik doğrulama ile kolay başvuru",
-      "photos": [],
-      "published_at": "2026-10-15T12:30:41+00:00"
-    },
-    {
       "topic_id": "kurumsal-teknik-danismanlik",
       "pillar": "kurumsal",
       "format": "story",
@@ -356,6 +347,18 @@
       "fingerprint": "basvuru-aktivasyon::kep ve e imzanız hızlıca aktif edilir",
       "photos": [],
       "published_at": "2026-11-20T15:56:54+00:00"
+    },
+    {
+      "topic_id": "kep-delil-20-yil",
+      "pillar": "kep_bilgi",
+      "format": "story",
+      "headline": "KEP İletileri 20 Yıl Boyunca Saklanır",
+      "headlines": [
+        "KEP İletileri 20 Yıl Boyunca Saklanır"
+      ],
+      "fingerprint": "kep-delil-20-yil::kep iletileri 20 yıl boyunca saklanır",
+      "photos": [],
+      "published_at": "2026-11-21T15:09:00+00:00"
     }
   ]
 }
