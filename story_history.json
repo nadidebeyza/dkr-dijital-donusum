@@ -1,18 +1,6 @@
 {
   "entries": [
     {
-      "topic_id": "sss-kadikoy-uskudar",
-      "pillar": "sss",
-      "format": "story",
-      "headline": "Üsküdar ve Kadıköy'den Kolay Başvuru",
-      "headlines": [
-        "Üsküdar ve Kadıköy'den Kolay Başvuru"
-      ],
-      "fingerprint": "sss-kadikoy-uskudar::üsküdar ve kadıköy den kolay başvuru",
-      "photos": [],
-      "published_at": "2026-10-17T11:26:29+00:00"
-    },
-    {
       "topic_id": "kep-cevre-dostu",
       "pillar": "kep_bilgi",
       "format": "story",
@@ -359,6 +347,18 @@
       "fingerprint": "eimza-kimler-icin::e imza kimler tarafından kullanılır",
       "photos": [],
       "published_at": "2026-11-22T15:09:56+00:00"
+    },
+    {
+      "topic_id": "kurumsal-teknik-danismanlik",
+      "pillar": "kurumsal",
+      "format": "story",
+      "headline": "Kurumsal Süreçlerde Teknik Danışmanlık Desteği",
+      "headlines": [
+        "Kurumsal Süreçlerde Teknik Danışmanlık Desteği"
+      ],
+      "fingerprint": "kurumsal-teknik-danismanlik::kurumsal süreçlerde teknik danışmanlık desteği",
+      "photos": [],
+      "published_at": "2026-11-25T17:51:39+00:00"
     }
   ]
 }
