@@ -1,18 +1,6 @@
 {
   "entries": [
     {
-      "topic_id": "kep-cevre-dostu",
-      "pillar": "kep_bilgi",
-      "format": "story",
-      "headline": "KEP ile Çevre Dostu Dijital Ofisler",
-      "headlines": [
-        "KEP ile Çevre Dostu Dijital Ofisler"
-      ],
-      "fingerprint": "kep-cevre-dostu::kep ile çevre dostu dijital ofisler",
-      "photos": [],
-      "published_at": "2026-10-18T11:58:36+00:00"
-    },
-    {
       "topic_id": "konum-anadolu-yakasi",
       "pillar": "konum_guven",
       "format": "story",
@@ -359,6 +347,18 @@
       "fingerprint": "kurumsal-teknik-danismanlik::kurumsal süreçlerde teknik danışmanlık desteği",
       "photos": [],
       "published_at": "2026-11-25T17:51:39+00:00"
+    },
+    {
+      "topic_id": "basvuru-uzaktan",
+      "pillar": "basvuru_sureci",
+      "format": "story",
+      "headline": "Uzaktan Kimlik Doğrulama ile Kolay Başvuru",
+      "headlines": [
+        "Uzaktan Kimlik Doğrulama ile Kolay Başvuru"
+      ],
+      "fingerprint": "basvuru-uzaktan::uzaktan kimlik doğrulama ile kolay başvuru",
+      "photos": [],
+      "published_at": "2026-11-26T17:34:23+00:00"
     }
   ]
 }
