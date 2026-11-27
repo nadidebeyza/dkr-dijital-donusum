@@ -220,6 +220,18 @@
       "fingerprint": "kep-sahis-firmalari::şahıs firmaları için kep çözümleri",
       "photos": [],
       "published_at": "2026-11-24T01:38:43+00:00"
+    },
+    {
+      "topic_id": "cta-dijital-donusum",
+      "pillar": "cta_kampanya",
+      "format": "single",
+      "headline": "İşletmenizin Dijital Dönüşümünü Güvenle Başlatın",
+      "headlines": [
+        "İşletmenizin Dijital Dönüşümünü Güvenle Başlatın"
+      ],
+      "fingerprint": "cta-dijital-donusum::işletmenizin dijital dönüşümünü güvenle başlatın",
+      "photos": [],
+      "published_at": "2026-11-27T22:38:18+00:00"
     }
   ]
 }
