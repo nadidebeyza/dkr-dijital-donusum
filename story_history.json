@@ -1,18 +1,6 @@
 {
   "entries": [
     {
-      "topic_id": "konum-anadolu-yakasi",
-      "pillar": "konum_guven",
-      "format": "story",
-      "headline": "Anadolu Yakası'ndan Kolay Ulaşım Noktası",
-      "headlines": [
-        "Anadolu Yakası'ndan Kolay Ulaşım Noktası"
-      ],
-      "fingerprint": "konum-anadolu-yakasi::anadolu yakası ndan kolay ulaşım noktası",
-      "photos": [],
-      "published_at": "2026-10-19T14:24:25+00:00"
-    },
-    {
       "topic_id": "cta-bugun-basvur",
       "pillar": "cta_kampanya",
       "format": "story",
@@ -359,6 +347,18 @@
       "fingerprint": "basvuru-uzaktan::uzaktan kimlik doğrulama ile kolay başvuru",
       "photos": [],
       "published_at": "2026-11-26T17:34:23+00:00"
+    },
+    {
+      "topic_id": "kep-cevre-dostu",
+      "pillar": "kep_bilgi",
+      "format": "story",
+      "headline": "Çevre Dostu Ofisler İçin KEP Çözümleri",
+      "headlines": [
+        "Çevre Dostu Ofisler İçin KEP Çözümleri"
+      ],
+      "fingerprint": "kep-cevre-dostu::çevre dostu ofisler için kep çözümleri",
+      "photos": [],
+      "published_at": "2026-11-27T17:16:42+00:00"
     }
   ]
 }
